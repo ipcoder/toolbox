@@ -1,0 +1,41 @@
+cameras:
+    right:
+      optics: &optics_right
+        focal: [2.375859260559082, 2.375859260559082]       # Focal length in [mm]. Only equal number of x and y is supported
+        princ: [640, 480]                                   # Must be in the image center. Other options are not supported currently
+
+      sensor: &sensor_right
+        size: [2.05, 1.5375]                              # In [mm]. Must be in the correct aspect ratio. We derive camera FOV from sensor size and focal length
+        filter: IR
+        pixels: [1280, 960]                                 # [num columns, num rows] # Not for Blender, for capture_sim
+        bits: 10                                            # number of bits populated  with data in the result image. The number of actual bits is 8^i, i=1,..
+        full_well: 7500                                     # Number of full well electrons
+        readout: 8                                          # sigma for readout gauss-distributed noise (in electrons). Should be around 10
+
+      orient: # component t,Rot relative to the right camera.  X to the right, Y forward, Z to the top (as in Blender). Units: [mm]
+        pos: [12.5, 0, 0]
+        rot: [[1,0,0],[0,1,0],[0,0,1]]
+
+    left:
+      optics: *optics_right
+      sensor: *sensor_right
+      orient: # same as in "orient" above
+        pos: [-12.5, 0, 0]
+        rot: [[1,0,0],[0,1,0],[0,0,1]]
+
+projectors:
+    proj:
+      pattern: # some physical description of the pattern. In Blender we use a bitmap
+        image: #T:\Synthetic_scenes\Human_Busts\Pjanic\white_pattern_x8.png #'C:\Work\data\Active\GooglePattern\Compare\clean_pattern_zoom4.png' #'T:\IgalL\Active_pattern_simul\clean_pattern_zoom4.png'
+      optics:
+        fov: 0.6108652353286743                             # This FOV is along Y axis (vertical angle) in [rad]
+      orient: # same as in "orient" above
+        pos: [0, 0, 0]
+        rot: [[1,0,0],[0,1,0],[0,0,1]]
+
+sys:
+    exposure: 0     # if this field is 0 or doesn't exist then auto exposure is used
+    ae:
+      wp:               # Percentile is in percent units (0..100), fraction is in range (0..1)
+        fract: 0.8       # fraction of the full dynamic range (0..1)
+        percent: 99.0     # percentile of pixels below the wp (0..100)

@@ -1,0 +1,26 @@
+name: FT3D
+mappings:
+    subset: str.lower
+    kind: { frames_cleanpass: image, disparity: disp, occlusions: occl }
+    view: { left: L, right: R }
+
+if kind == 'image':
+    alg: cam
+    range: "0,255"
+
+
+if kind == 'disp':
+    alg: GT
+
+if kind == 'occl':
+    alg: GT
+
+_samples:
+    - disparity/TRAIN/A/0749/right/0015.pfm
+    - frames_cleanpass/TEST/C/0145/right/0013.png
+
+search:
+    pattern: "(?P<kind>(frames_cleanpass)|(disparity)|(occlusions))/{subset}\
+             /{scene_1}/{scene_2}/{view}/{scene_3}\
+             \\.(?P<ext>(?(3)pfm|png))"
+    max_depth: 10

@@ -1,0 +1,5 @@
+pattern: 'level_{level}_{lid}/file_scene{scene}_id{sid}.txt'
+mappings:
+    sid: {'0':'L', '1':'R'}
+    lid: {'1':'easy', '2':'hard'}
+cond: "sid=='L' or level=='two'"

@@ -1,0 +1,66 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+.ipynb_checkpoints/
+.env
+*.py[cod]
+
+# C extensions
+*.so
+
+# Distribution / packaging
+# bin/
+build/
+develop-eggs/
+dist/
+eggss/
+lib/
+lib64/
+parts/
+sdist/
+var/
+_build/
+*.egg-info/
+.installed.cfg
+
+*.egg
+*.pth
+*.bin
+*.ckpt
+*.tar
+*.gz
+*.zip
+*.tif
+*.png
+*.svg
+*.mat
+.run/
+.pytest_cache/
+.dvc/
+events.out.tfevents.*
+*.pkl
+*.directory
+.idea/misc.xml
+
+# Caches
+cachedir/
+*.cache
+*.vscode/
+*.pytest_cache
+*.pfm
+*.ply
+*.txt
+*.list
+*.gif
+*.pdf
+*.mp4
+*.jpg
+*.ipynb
+*.blend
+*.xml
+*.html
+*.v
+
+
+# pixi environments
+.pixi
+*.egg-info
