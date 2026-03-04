@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Iterable, Any
 
 import pandas as pd
-import pydantic
+import pydantic.v1 as pydantic
 from box import Box
 
 from ..datatools import complete_missing, UndefCond, UndefTypes

@@ -1,8 +1,16 @@
+import shutil
 import tempfile
+
+import pytest
 
 from ..dotstyle import *
 
+dot_available = pytest.mark.skipif(
+    shutil.which("dot") is None, reason="graphviz 'dot' binary not in PATH"
+)
 
+
+@dot_available
 def test_feud():
 
     # Prepare styles

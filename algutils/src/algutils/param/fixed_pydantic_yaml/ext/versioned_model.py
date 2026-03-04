@@ -1,7 +1,7 @@
 import warnings
 from typing import Optional, Tuple, Type
 
-from pydantic import validator
+from pydantic.v1 import validator
 
 from .semver import SemVer
 from ..model import YamlModel

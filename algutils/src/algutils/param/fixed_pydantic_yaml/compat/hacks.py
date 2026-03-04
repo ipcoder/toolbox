@@ -25,7 +25,7 @@ def get_str_like_types() -> List[Type]:
         WindowsPath,
     )
 
-    from pydantic import types, networks
+    from pydantic.v1 import types, networks
 
     def _chk(x) -> bool:
         try:
@@ -49,7 +49,7 @@ def get_str_like_types() -> List[Type]:
 def get_int_like_types() -> List[Type]:
     """Returns many int-like types from stdlib and Pydantic."""
 
-    from pydantic import types
+    from pydantic.v1 import types
 
     def _chk(x) -> bool:
         try:

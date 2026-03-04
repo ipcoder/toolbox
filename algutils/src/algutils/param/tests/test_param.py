@@ -1,4 +1,4 @@
-import pydantic
+import pydantic.v1 as pydantic
 
 from algutils.io.format import *
 from algutils.param.models import YamlModel

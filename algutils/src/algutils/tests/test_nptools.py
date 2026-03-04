@@ -51,7 +51,6 @@ def test_array_repr():
 
 
 def test_sampler():
-    pytest.importorskip("algutils.math.hist")
     from algutils.math.hist import Sampler
 
     p = (mn, mx, step, bins) = (0, 10, 2, 5)

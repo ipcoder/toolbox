@@ -1,7 +1,7 @@
 from functools import wraps
 from typing import Any, Callable, Optional, Union, no_type_check
 
-from pydantic import errors
+from pydantic.v1 import errors
 from semver import VersionInfo
 
 from ..compat.types import YamlStr

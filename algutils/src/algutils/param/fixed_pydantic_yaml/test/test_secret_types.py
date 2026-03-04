@@ -1,7 +1,7 @@
 """Tests for SecretStr, SecretBytes."""
 
 import pytest
-from pydantic import SecretBytes, SecretStr
+from pydantic.v1 import SecretBytes, SecretStr
 
 from ..model import YamlModel
 

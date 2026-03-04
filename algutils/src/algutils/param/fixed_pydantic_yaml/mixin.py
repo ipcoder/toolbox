@@ -15,17 +15,14 @@ from typing import (
     cast,
     no_type_check,
 )
-from pydantic.parse import Protocol, load_file, load_str_bytes
-from pydantic.main import ROOT_KEY, BaseModel, ModelMetaclass, BaseConfig
-from pydantic.error_wrappers import ErrorWrapper, ValidationError
-from pydantic.types import StrBytes
+from pydantic.v1 import BaseModel, ValidationError
+from pydantic.v1.error_wrappers import ErrorWrapper
+from pydantic.v1.parse import Protocol, load_file, load_str_bytes
+from pydantic.v1.main import ROOT_KEY, ModelMetaclass, BaseConfig
+from pydantic.v1.types import StrBytes
 
 if TYPE_CHECKING:
-    from pydantic.typing import (
-        DictStrAny,
-        AbstractSetIntStr,
-        MappingIntStrAny,
-    )
+    from pydantic.v1.typing import DictStrAny, AbstractSetIntStr, MappingIntStrAny
 
     Model = TypeVar("Model", bound="BaseModel")
 

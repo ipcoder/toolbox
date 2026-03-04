@@ -22,10 +22,9 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
-**/.pixi/
-
 
 # Virtual environments
+.pixi/
 venv/
 env/
 ENV/

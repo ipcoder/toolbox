@@ -6,7 +6,7 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Union, Type, Callable, List, Literal, Iterable
 
-import pydantic as pyd
+import pydantic.v1 as pyd
 
 from ..io.format import FileFormat, CT, FormatHandler, MetaFormat
 from .. import logger, as_list, as_iter

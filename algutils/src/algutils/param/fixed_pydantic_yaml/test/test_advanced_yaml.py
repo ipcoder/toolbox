@@ -3,7 +3,7 @@
 from typing import Type
 
 import pytest
-from pydantic import BaseModel, Field
+from pydantic.v1 import BaseModel, Field
 
 from ..model import YamlModel
 

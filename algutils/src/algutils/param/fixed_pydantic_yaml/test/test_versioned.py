@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import pytest
-from pydantic import ValidationError
+from pydantic.v1 import ValidationError
 
 from ..ext.semver import SemVer
 from ..ext.versioned_model import VersionedYamlModel

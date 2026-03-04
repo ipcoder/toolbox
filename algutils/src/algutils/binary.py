@@ -257,7 +257,7 @@ def encode_array(bits, a, range_weight=0.01, steps=500, show=False):
     def rounding_error(factor):
         a_k = pack(factor).astype('double')
         avr = a_k.mean()
-        ratio_error = (((a_k / avr - original_ratios) * max_rng) ** 2).sum() if avr else np.infty
+        ratio_error = (((a_k / avr - original_ratios) * max_rng) ** 2).sum() if avr else np.inf
         range_error = ((a_k - max_rng) ** 2).sum()
         return np.array([ratio_error, range_error, ratio_error + range_weight * range_error])
 
@@ -274,7 +274,7 @@ def encode_array(bits, a, range_weight=0.01, steps=500, show=False):
         plt.hold(True)
         print('costs factor range total  results')
         print('-----------------------------------------------------')
-        y_max = 2 * np.nanmean(errors[errors < np.infty])
+        y_max = 2 * np.nanmean(errors[errors < np.inf])
         for j, label in zip(range(errors.shape[1]), labels):
             i = np.argmin(errors[:, j])
             k = k_range[i]

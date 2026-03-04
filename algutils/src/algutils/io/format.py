@@ -6,7 +6,7 @@ from enum import Flag, auto
 from pathlib import Path
 from typing import Iterable, Any, Optional, Union, Sequence, Type, Literal, Callable, NamedTuple
 
-from pydantic import BaseModel, Field, DirectoryPath, PrivateAttr, validator
+from pydantic.v1 import BaseModel, Field, DirectoryPath, PrivateAttr, validator
 
 from .. import as_list, logger
 from ..regexp import is_regex
