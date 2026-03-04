@@ -48,7 +48,7 @@ class LabelRules:
     @staticmethod
     def load_domains(path=None):
         """Load domains conventions"""
-        from toolbox.param import TBox
+        from algutils.param import TBox
         from inu.env import EnvLoc
         # Consider: is that the right approach ? What if RES_LOC missing and path is None?
         path = path or (EnvLoc.RESOURCES / 'schemes ').first_file('labels.yml')

@@ -9,8 +9,8 @@ from typing import Iterable, Union, Tuple
 # and exported accordingly by this module.
 
 from numpy import squeeze, number
-from toolbox.image.transforms import gamma, shot_noise, norm, take_ch, alpha_blend
-from toolbox.image.tools import center_crop
+from algutils.image.transforms import gamma, shot_noise, norm, take_ch, alpha_blend
+from algutils.image.tools import center_crop
 
 __all__ = ['gamma', 'shot_noise', 'norm', 'center_crop',
            'squeeze', 'regions', 'recode', 'take_ch', 'alpha_blend']
@@ -33,7 +33,7 @@ def recode(im, from_to: Union[Pair, Iterable[Pair]]):
 
 
 def regions(im, **rgn_codes):
-    from toolbox.image.regions import Regions
+    from algutils.image.regions import Regions
     """Create Regions object from the encoded image data."""
     return Regions(im, rgn_codes=rgn_codes)
 

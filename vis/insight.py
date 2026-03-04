@@ -14,9 +14,9 @@ import matplotlib.widgets as wdg
 import numpy as np
 import regex as re
 
-import toolbox.utils.codetools as cdt
+import algutils.codetools as cdt
 from inu.env import EnvLoc
-from toolbox.utils import as_list
+from algutils import as_list
 from toolbox.vis.interact import LinesDrawer
 
 _log = logging.getLogger(__name__)
@@ -170,7 +170,7 @@ def imhist(*imgs, titles=None, sharex=True, sharey=True, ax=None, grid=None,
     :param sharey: for grid-plot
     :param ax:     only for single image - axes to draw in
     :param grid:   (rows, columns)
-    :param measure: list of metrics to measure (see `toolbox.utils.nptools.stats`)
+    :param measure: list of metrics to measure (see `algutils.nptools.stats`)
     :param prec:    measures precision
     :param kws:    arguments passed to plt.hist
 
@@ -206,7 +206,7 @@ def imhist(*imgs, titles=None, sharex=True, sharey=True, ax=None, grid=None,
 
     if measure:
         measure = as_list(measure)
-        from toolbox.utils.nptools import stats
+        from algutils.nptools import stats
 
     for i, (im, ax) in enumerate(zip(imgs, axs)):
         plt.sca(ax)
@@ -376,7 +376,7 @@ class MosaicParser:
                 (self.images if is_image(c) else self.plots).append(c)
 
         if self.transpose:
-            from toolbox.utils.datatools import transpose
+            from algutils.datatools import transpose
             rows = transpose(rows)
 
         self.layout = rows
@@ -829,7 +829,7 @@ def imgrid(*images,
     cmaps = _assign_cmaps(cmap, len(images))
 
     if transp:  # that happens only if grid is not mosaic!
-        from toolbox.utils.datatools import transpose
+        from algutils.datatools import transpose
         grid = grid[::-1]
         images, clims, cmaps = map(lambda _: transpose(_, int(grid[0])),
                                    (images, clims, cmaps))
@@ -1000,7 +1000,7 @@ def hist_grid(hists: dict[str, np.ndarray] | np.ndarray,
     :param ticks: number of ticks of both or each of the axes
     :return:
     """
-    from toolbox.utils.datatools import split_dict
+    from algutils.datatools import split_dict
     from matplotlib import pyplot as plt, ticker
 
     _fig_kws = {'figsize', 'dpi', 'layout', 'tight_layout'}

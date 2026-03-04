@@ -1,0 +1,55 @@
+[workspace]
+name = "algutils"
+version = "0.1.0"
+description = "Algorithmic utilities: data tools, I/O, parameters, paths, caching, and more"
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-arm64", "osx-64", "win-64"]
+
+[dependencies]
+python = ">=3.9,<3.13"
+# Core deps from conda-forge
+numpy = ">=1.20"
+pandas = ">=1.3"
+pydantic = ">=1.10,<2"  # fixed_pydantic_yaml is written for pydantic v1
+pyyaml = ">=5.4"
+"ruamel.yaml" = ">=0.15"
+regex = ">=2021"
+tqdm = ">=4.60"
+joblib = ">=1.0"
+configargparse = ">=1.0"
+toolz = ">=0.11"
+numba = ">=0.55"
+"scikit-learn" = ">=1.0"
+deprecated = ">=1.2"
+semver = ">=2.13"
+"scikit-image" = ">=0.19"
+uncertainties = ">=3.1"
+pint = ">=0.20"
+ipython = ">=8.0"
+pygraphviz = ">=1.7"
+
+[pypi-dependencies]
+# Editable install of this package (and PyPI-only deps)
+algutils = { path = ".", editable = true }
+frozendict = ">=2.0.0"
+python-box = ">=6.0.0"
+xxhash = ">=2.0.0"  # PyPI-only; conda-forge has python-xxhash but no v3+
+zfpy = "*"          # PyPI-only
+
+[feature.dev.dependencies]
+pytest = ">=7.0"
+"pytest-cov" = ">=3.0"
+
+[feature.dev.pypi-dependencies]
+algutils = { path = ".", editable = true }
+frozendict = ">=2.0.0"
+python-box = ">=6.0.0"
+xxhash = ">=2.0.0"
+
+[environments]
+default = { solve-group = "default" }
+dev = { features = ["dev"], solve-group = "default" }
+
+[feature.dev.tasks]
+test = "pytest src/algutils -v"
+

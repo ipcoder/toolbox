@@ -5,10 +5,10 @@ from typing import Iterator, Tuple, Any, Dict
 
 import numpy as np
 
-from toolbox.utils.nptools import Array
-from toolbox.utils.label import Labels
-from toolbox.utils.pdtools import DTable
-from toolbox.utils.strings import compact_repr, hash_str
+from algutils.nptools import Array
+from algutils.label import Labels
+from algutils.pdtools import DTable
+from algutils.strings import compact_repr, hash_str
 
 MISSING = dcls.MISSING
 _MISSING_TYPE = type(MISSING)
@@ -102,7 +102,7 @@ class Labeled(Labels):
                 sep, exclude, keys
         :return: tuple(joint_label, data_item)
         """
-        from toolbox.utils import as_iter
+        from algutils import as_iter
         data = self[data]
         if fmt:
             return fmt.format(**self), data
@@ -121,7 +121,7 @@ class Labeled(Labels):
     @classmethod
     def from_table(cls, db: DTable, *, missing=KeyError, undef=()):
         """
-        Create instance of this Labeled type from :cls:`toolbox.utils.pdtools.DataTable`
+        Create instance of this Labeled type from :cls:`algutils.pdtools.DataTable`
         All the pre-defined keys are used to query the index.
         All the undefined keys must be in the table and are initialized
 
@@ -318,7 +318,7 @@ class DataC:
         """
         tp = tp or self.type(key)
         if issubclass(type(tp), type) and not isinstance(value, tp):
-            from toolbox.utils.pdtools import DataTable, DataSeries
+            from algutils.pdtools import DataTable, DataSeries
             if isinstance(tp, DCType) and isinstance(value, (DataTable, DataSeries)):
                 value = tp.from_table(value)
             else:
@@ -359,7 +359,7 @@ class DataC:
         else:
             fields = self.to_dict()
 
-        from toolbox.utils.pdtools import DataTable
+        from algutils.pdtools import DataTable
         return DataTable.from_dict(fields, orient='index')
 
     def to_dict(self):
@@ -591,7 +591,7 @@ class DCType(type):
             setattr(new_cls, k, tp)
 
         all_labeled = all(map(lambda t: isinstance(t, LabeledType), fields_types.values()))
-        from toolbox.utils.datatools import common_dict
+        from algutils.datatools import common_dict
         common, unique = all_labeled and common_dict(
             {k: t._defaults for k, t in fields_types.items()},
             unique=True) or ({}, {})

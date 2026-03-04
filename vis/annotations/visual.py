@@ -10,7 +10,7 @@ from matplotlib.backend_bases import MouseButton
 from matplotlib.pyplot import Axes
 from matplotlib.widgets import PolygonSelector
 from toolbox.datacast import DataCollection
-from toolbox.utils.label import Labels
+from algutils.label import Labels
 from .collect import IssueCollection
 
 __all__ = ['VisIssue', 'show_issues_on_scenes']

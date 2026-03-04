@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from toolbox.utils.events import Timer
+from algutils.events import Timer
 
 with Timer(f" ← {__file__} imports", "timing", min=0.1, pre=f' → importing in {__file__} ...'):
     from collections import namedtuple
@@ -9,9 +9,9 @@ with Timer(f" ← {__file__} imports", "timing", min=0.1, pre=f' → importing i
     import pandas as pd
 
     # utils import
-    from toolbox.utils import as_list, logger, drop_undef, as_iter
-    import toolbox.utils.pdtools as pdt
-    from toolbox.utils.cache import CacheMode, Cacher
+    from algutils import as_list, logger, drop_undef, as_iter
+    import algutils.pdtools as pdt
+    from algutils.cache import CacheMode, Cacher
 
     # internal imports
     from . import transtools as tr, CollectTable
@@ -132,7 +132,7 @@ class DataCollection:
                                   defaults=['', '', (), None, None, None]
                                   )):
         def __repr__(self):
-            from toolbox.utils.strings import dict_str
+            from algutils.strings import dict_str
             change = "" if (self.before is None or self.after is None) \
                 else f" {self.before}⮕{self.after}"
             desc = self.desc or ','.join(filter(None, [
@@ -414,7 +414,7 @@ class DataCollection:
                 Ignored if cache is Cacher object
         :return: created Cacher object
         """
-        from toolbox.utils.cache import CacheMode, Cacher
+        from algutils.cache import CacheMode, Cacher
         if isinstance(cache, Cacher):
             return cache
 
@@ -817,7 +817,7 @@ class DataCollection:
         if bundle := self.bundle:
             bundle = [*filter(sub.index.names.__contains__, self.bundle)]
 
-        from toolbox.utils.strings import dict_str
+        from algutils.strings import dict_str
         join = lambda seq: seq and [','.join(map(str, seq))] or []
         desc = join(join(args) + (kws and [dict_str(kws)] or []))[0]
         return type(self).from_db(sub, like=self, bundle=bundle,
@@ -983,10 +983,10 @@ class DataCollection:
              islice=None, shuffle=False,
              out: str = None, progress: bool | dict = None) -> Iter:
         """
-        Wraps `toolbox.utils.pdtools.group_iter` to wrok on the internal
+        Wraps `algutils.pdtools.group_iter` to wrok on the internal
         DataFrame (self.db), also can transform and pivot the groups.
 
-        Docs from `toolbox.utils.pdtools.group_iter`:
+        Docs from `algutils.pdtools.group_iter`:
         -----------------------------------------
         Create iterator over groups of paths with flexible organization,
         producing either tuples (if `gid` is True): (group_index, group_data)
@@ -1189,7 +1189,7 @@ class SinkRepo:
         return f"<{type(self).__name__}>({self.root}){self.labeler._pather.form.str}"
 
     def __repr__(self):
-        from toolbox.utils.strings import indent_lines as ind
+        from algutils.strings import indent_lines as ind
         seq = lambda _: ', '.join(_)
 
         return f"<{type(self).__name__}>({self.root}):\n" + \
@@ -1365,8 +1365,8 @@ class SinkRepo:
         :param no_tag: labels for unnamed tag or permission to take unknown from the `labels`
         :return: number of data items saved
         """
-        from toolbox.io.imwrite import imsave
-        from toolbox.io.imread import imread
+        from algutils.io.imwrite import imsave
+        from algutils.io.imread import imread
         import numpy as np
         import pandas as pd
         import os.path

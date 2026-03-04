@@ -11,7 +11,7 @@ from toolbox.datacast.scan import GuideScan
 from inu.env import EnvLoc
 from toolbox.resman import resource as rc
 from toolbox.resman.resource import ResModelError
-from toolbox.utils import logger, as_list, Strings
+from algutils import logger, as_list, Strings
 
 _log = logger('datacast')
 _datasource_yml = 'datasource.yml'

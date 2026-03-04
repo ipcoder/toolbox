@@ -4,10 +4,10 @@ import abc
 import dataclasses
 from typing import Any, Collection, Iterable, Dict
 
-from toolbox.param import TBox
-from toolbox.utils import logger
-from toolbox.utils.cache import PersistCache
-from toolbox.utils.events import Timer
+from algutils.param import TBox
+from algutils import logger
+from algutils.cache import PersistCache
+from algutils.events import Timer
 from toolbox.engines.label_io import Labeled, DataC, DCType, LabeledType, LT
 
 _log = logger('engines')
@@ -66,7 +66,7 @@ class EngineMeta(abc.ABCMeta):
         :return: dict with extracted fields, or ``{}``
         """
         import re
-        from toolbox.utils.strings import camel_to_snake
+        from algutils.strings import camel_to_snake
 
         # https://regex101.com/r/7kPfYB/1
         name_regex = re.compile(  # name regex digests sequential Caps and digits (Slack, CoPoSS, CoPo34)

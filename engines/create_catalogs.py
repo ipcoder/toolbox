@@ -1,4 +1,4 @@
-from toolbox.utils.logs import setup_logs
+from algutils.logs import setup_logs
 import click
 from toolbox.engines import engines
 

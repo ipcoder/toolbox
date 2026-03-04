@@ -51,7 +51,7 @@ def test_iter(tiny_stereo):
 
 
 def test_mid_measure(tiny_stereo):
-    from toolbox.utils.cache import Cacher, CacheMode
+    from algutils.cache import Cacher, CacheMode
     cache_par = dict(name='cache_name',
                      folder=tiny_stereo.caster.root.parent.__str__())
     cacher = Cacher(**cache_par)
@@ -134,7 +134,7 @@ def test_mix(tiny_stereo):
 
 def test_sink_repo():
     from inu.env import EnvLoc
-    from toolbox.utils.paths import TransPath
+    from algutils.paths import TransPath
 
     labels = {'dataset': 'FT3D',
               'scene': 'A_0000_0007',

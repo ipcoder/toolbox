@@ -8,13 +8,13 @@ import pydantic
 import regex as re  # Using more advanced regex package!
 import yaml
 
-from toolbox.param import YamlModel
-from toolbox.utils import logger, as_list
-from toolbox.utils.cache import CachedPipe, CacheMode, Pickle, CacheInvalidError, NoSerial
-from toolbox.utils.datatools import Filter
-from toolbox.utils.events import Timer
-from toolbox.utils.filesproc import Path, root_cropper, root_adder, normalize
-from toolbox.utils.fnctools import express_to_kw_func
+from algutils.param import YamlModel
+from algutils import logger, as_list
+from algutils.cache import CachedPipe, CacheMode, Pickle, CacheInvalidError, NoSerial
+from algutils.datatools import Filter
+from algutils.events import Timer
+from algutils.filesproc import Path, root_cropper, root_adder, normalize
+from algutils.fnctools import express_to_kw_func
 from . import models as md
 
 __all__ = ['DataCaster', 'CacheMode']
@@ -144,7 +144,7 @@ class DataCaster:
 
     @property
     def labeling_namespace(self):
-        from toolbox.utils.strings import hash_str
+        from algutils.strings import hash_str
         from pandas import NA, isnull
         return dict(hash_str=hash_str, name=self.config.name, NA=NA, isnull=isnull)
 
@@ -218,7 +218,7 @@ class DataCaster:
             _log.warning(f"{self} found no matching files!")
 
         if cfg := self.config.sample:
-            from toolbox.utils.pdtools import sample
+            from algutils.pdtools import sample
             ds = sample(ds, **cfg.dict())
         return ds
 

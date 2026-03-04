@@ -6,11 +6,11 @@ from typing import Literal, get_args, Collection, Iterable
 
 from toolbox.engines.core import AlgoEngine
 from inu.env import EnvLoc
-from toolbox.param.models import YamlModel, pyd
+from algutils.param.models import YamlModel, pyd
 from toolbox.resman.resource import ResourceModel, locatable
-from toolbox.utils import drop_undef
-from toolbox.utils.filesproc import PyModuleLocator
-from toolbox.utils.logs import getLogger, error
+from algutils import drop_undef
+from algutils.filesproc import PyModuleLocator
+from algutils.logs import getLogger, error
 
 _log = getLogger('engines')
 ENGINES_YML = 'engines.yml'  # fixed name for any engines catalog
@@ -114,7 +114,7 @@ class EnginesCatalogRM(ResourceModel):
                 if (eng := valid_info(name, info))}
 
     def to_table(self):
-        from toolbox.utils.pdtools import DataTable
+        from algutils.pdtools import DataTable
         return DataTable(dict(v) for k, v in self.engines.items())
 
 
@@ -349,7 +349,7 @@ class Registry:
         :return:
         """
         import shutil
-        from toolbox.param import TBox
+        from algutils.param import TBox
         # ---------- if its a package provided, convert into path first ---------------
         if package:  # may be it's a dotted package name
             assert not path, "Use either folder or module!"

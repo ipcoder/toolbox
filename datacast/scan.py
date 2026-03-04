@@ -8,10 +8,10 @@ import pydantic
 import regex as re
 from pydantic import PrivateAttr
 
-from toolbox.param import YamlModel
-from toolbox.utils import logger
-from toolbox.utils.filesproc import normalize
-from toolbox.utils.paths import TransPath
+from algutils.param import YamlModel
+from algutils import logger
+from algutils.filesproc import normalize
+from algutils.paths import TransPath
 
 _log = logger('datacast.scan')
 

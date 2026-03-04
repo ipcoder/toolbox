@@ -1,66 +1,69 @@
-# Byte-compiled / optimized / DLL files
+# Python
 __pycache__/
-.ipynb_checkpoints/
-.env
 *.py[cod]
-
-# C extensions
+*$py.class
 *.so
-
-# Distribution / packaging
-# bin/
+.Python
 build/
 develop-eggs/
 dist/
-eggss/
+downloads/
+eggs/
+.eggs/
 lib/
 lib64/
 parts/
 sdist/
 var/
-_build/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
 *.egg-info/
 .installed.cfg
-
 *.egg
-*.pth
-*.bin
-*.ckpt
-*.tar
-*.gz
-*.zip
-*.tif
-*.png
-*.svg
-*.mat
-.run/
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
 .pytest_cache/
-.dvc/
-events.out.tfevents.*
-*.pkl
-*.directory
-.idea/misc.xml
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
 
-# Caches
-cachedir/
-*.cache
-*.vscode/
-*.pytest_cache
-*.pfm
-*.ply
-*.txt
-*.list
-*.gif
-*.pdf
-*.mp4
-*.jpg
-*.ipynb
-*.blend
-*.xml
-*.html
-*.v
+# Type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
 
+# Jupyter
+.ipynb_checkpoints/
+
+# Documentation
+docs/_build/
+docs/.doctrees/
+
+# Distribution
+dist/
+*.tar.gz
+*.whl
+
+# OS
+.DS_Store
+Thumbs.db
 
 # pixi environments
-.pixi
-*.egg-info
+.pixi/*
+!.pixi/config.toml

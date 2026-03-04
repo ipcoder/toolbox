@@ -5,7 +5,7 @@ from typing import Optional
 
 from inu.env import EnvLoc
 from toolbox.resman import ModelsManager, ResourceModel  # initialize the resource management sub-system
-from toolbox.utils.logs import setup_logs, logger
+from algutils.logs import setup_logs, logger
 
 
 mm = ModelsManager()

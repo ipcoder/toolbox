@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 
 from inu.env import EnvLoc
-from toolbox.utils.pdtools import DataTable
+from algutils.pdtools import DataTable
 from pathlib import Path
 
 __all__ = ['IssueCollection']

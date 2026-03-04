@@ -7,10 +7,10 @@ from typing import Union, Callable, Iterable, Literal, Any, Collection, get_args
 import numpy as np
 import pandas as pd
 
-from toolbox.utils import as_list, pdtools as pdt
-from toolbox.utils.fnctools import O, Namespace
-from toolbox.utils.label import Labels
-from toolbox.utils.wrap import name_tuple
+from algutils import as_list, pdtools as pdt
+from algutils.fnctools import O, Namespace
+from algutils.label import Labels
+from algutils.wrap import name_tuple
 
 EMPTY_CELL = (None, pd.NA, np.nan)
 
@@ -395,7 +395,7 @@ def read_by_format(path):
     :param path:
     :return: data from the file if format is found or None
     """
-    from toolbox.io.imread import imread, SUPPORT_READ, imread_stereo
+    from algutils.io.imread import imread, SUPPORT_READ, imread_stereo
     path = Path(path)
     ext = path.suffix.lower()
     if "StereoImage__Channel_" in path.name and ext == '.tif':  # combined L and R from NU40
@@ -404,7 +404,7 @@ def read_by_format(path):
         return imread(path)
 
     if path.name.lower() == 'calib.txt':
-        from toolbox.io.special import middlebury_calib
+        from algutils.io.special import middlebury_calib
         return middlebury_calib(path)
     raise NotImplementedError(f"File's {str(path)} {ext=} is not among supported ({SUPPORT_READ=})")
 
@@ -466,7 +466,7 @@ def read_by_format(path):
 #              and with `codes` column dropped
 #     """
 #     if 'rgn_codes' in g.columns:
-#         from toolbox.utils.image import Regions
+#         from algutils.image import Regions
 #         data_cols = ['data', codes]
 #         is_rgn = g.rgn_codes.notna()
 #         g.loc[is_rgn, data] = g.loc[is_rgn, data_cols].apply(lambda p: Regions(*p), axis=1)

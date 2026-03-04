@@ -121,7 +121,7 @@ class MESHUpdater:
         self.update()
 
     def update(self):
-        from toolbox.io.imread import imread
+        from algutils.io.imread import imread
         import open3d as o3d
 
         try:

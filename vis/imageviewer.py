@@ -18,9 +18,9 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as Navigatio
 from PyQt5.QtWidgets import QDialog, QApplication, QVBoxLayout
 
 from toolbox.vis.insight import imgrid
-from toolbox.io.ciif import images_to_ciif
-from toolbox.utils.short import unless
-from toolbox.io.imread import imread
+from algutils.io.ciif import images_to_ciif
+from algutils.short import unless
+from algutils.io.imread import imread
 
 
 def split_by_bits(arr, bits):

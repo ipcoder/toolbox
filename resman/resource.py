@@ -8,12 +8,12 @@ from typing import (Collection, TypeAlias, Callable, Type, TYPE_CHECKING, Union,
 from pandas import DataFrame
 from pydantic import FilePath, DirectoryPath, BaseModel, Extra, root_validator, ValidationError
 
-import toolbox.param.models as pm
+import algutils.param.models as pm
 
-from toolbox.utils import logger, as_iter, drop_undef, as_list
-from toolbox.utils.events import timed, time
-from toolbox.utils.filesproc import PathT, Path, normalize, Locator, represents_path
-from toolbox.utils.wrap import CaseInsEnum, enum_attr
+from algutils import logger, as_iter, drop_undef, as_list
+from algutils.events import timed, time
+from algutils.filesproc import PathT, Path, normalize, Locator, represents_path
+from algutils.wrap import CaseInsEnum, enum_attr
 
 if TYPE_CHECKING:
     from toolbox.datacast import DataCaster, DataCollection
@@ -615,7 +615,7 @@ class ResManager(Generic[RT]):
         :param report: return the last discovery report as string or just timestamp if `False`
         :return: None when sets, 0 if given folders were never discovered.
         """
-        from toolbox.utils.strings import hash_str
+        from algutils.strings import hash_str
 
         if tm == 0:
             if folders:
@@ -758,7 +758,7 @@ class ResManager(Generic[RT]):
         if not columns:
             return out
 
-        from toolbox.utils.pdtools import DataTable
+        from algutils.pdtools import DataTable
         df = DataTable(out, columns=[attr] if attr in ("name", "path", "res") else None)
         if isinstance(columns, list):
             df = df[columns]
@@ -810,7 +810,7 @@ class ResManager(Generic[RT]):
 
         info = self._resreg.get(name, None)  # another attempt after rescan
         if not info and fuzzy is not False and self._resreg:
-            from toolbox.utils.strings import fuzzy_find
+            from algutils.strings import fuzzy_find
             names = list(self._resreg)
             if fuzzy is None:  # just find closest and report of possible candidate
                 if found := fuzzy_find(name, names, out='string', case=False, score_cutoff=92):
@@ -833,7 +833,7 @@ class ResManager(Generic[RT]):
         return f"<RM:{self.model.__name__.replace('Model', '')}>[{len(self)}]"
 
     def __repr__(self):
-        from toolbox.utils.strings import short_form
+        from algutils.strings import short_form
         locs = short_form(str(self._locs.first), 10, 16)
         return f"{self} in {locs}, {self.last_discover(report=True)}"
 
@@ -1210,7 +1210,7 @@ def locatable(
     """
     loc_par = locals().copy()
     from toolbox.datacast.scan import GuideScan
-    from toolbox.utils.datatools import rm_keys
+    from algutils.datatools import rm_keys
 
     if folders is None:  # Consider: rase Exception?
         _log.error(f"Resource is specified `locatable` without specifying locations!")

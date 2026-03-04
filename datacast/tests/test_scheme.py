@@ -4,9 +4,9 @@ from pathlib import Path
 import pytest
 
 from toolbox.datacast.caster import PickleRelativePath
-from toolbox.param import TBox
-from toolbox.utils.cache import Pickle, CacheInvalidError, CachedPipe, CacheMode
-from toolbox.utils.paths import TransPath
+from algutils.param import TBox
+from algutils.cache import Pickle, CacheInvalidError, CachedPipe, CacheMode
+from algutils.paths import TransPath
 
 
 def test_labels_extraction(tiny_stereo):

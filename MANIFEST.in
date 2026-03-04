@@ -1,0 +1,29 @@
+# Include README and license files
+include README.md
+include LICENSE
+include CHANGELOG.md
+include pyproject.toml
+
+# Include package data files
+recursive-include toolbox *.yml
+recursive-include toolbox *.yaml
+recursive-include toolbox *.json
+recursive-include toolbox *.md
+recursive-include toolbox *.ipynb
+recursive-include toolbox *.puml
+recursive-include toolbox *.jscm
+recursive-include toolbox *.org
+recursive-include toolbox py.typed
+
+# Exclude test files from distribution
+global-exclude test_*.py
+global-exclude conftest.py
+recursive-exclude toolbox/tests *
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+recursive-exclude * .pytest_cache
+recursive-exclude * .mypy_cache
+recursive-exclude * .tox
+recursive-exclude * .eggs
+recursive-exclude * *.egg-info
+
