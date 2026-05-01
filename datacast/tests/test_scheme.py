@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from toolbox.datacast.caster import PickleRelativePath
+from datacast.caster import PickleRelativePath
 from algutils.param import TBox
 from algutils.cache import Pickle, CacheInvalidError, CachedPipe, CacheMode
 from algutils.paths import TransPath

@@ -3,8 +3,7 @@ import logging
 import numpy as np
 import pytest
 
-from toolbox.datacast.collect import DataCollection, SinkRepo
-from toolbox.datacast.models import CollectionRM, SchemeRM
+from datacast.collect import DataCollection, SinkRepo
 
 np.set_printoptions(precision=2, threshold=1000, suppress=True, linewidth=120)
 
@@ -92,8 +91,8 @@ def test_transforms(tiny_stereo):
     import pandas as pd
     pd.set_option('display.max_colwidth', 32)
     pd.set_option('display.width', 120)
-    from toolbox.datacast.transtools import apply_column_transform
-    from toolbox.datacast.transtools import Col
+    from datacast.transtools import apply_column_transform
+    from datacast.transtools import Col
     itr = (dc.iter('scene', index=['kind', 'alg', 'view'], trans=False, out="frame")
            / (lambda g: g.xs('L', level='view', drop_level=False))
            / (lambda g: apply_column_transform(g, drop=False)))
@@ -103,16 +102,10 @@ def test_transforms(tiny_stereo):
 
 
 def test_label_rules():
-    from toolbox.datacast.labeled import LabelRules
+    from datacast.labeled import LabelRules
     assert len(LabelRules.domains())
     rules = LabelRules('stereo')
     assert len(rules.labels)
-
-
-def test_config(tiny_stereo):
-    assert CollectionRM('tiny')
-    assert CollectionRM(datasets='tiny')
-    assert CollectionRM(datasets=['tiny'])
 
 
 def test_mix(tiny_stereo):
@@ -132,30 +125,3 @@ def test_mix(tiny_stereo):
     assert len(mixed_dc) == len(tiny_stereo)
 
 
-def test_sink_repo():
-    from inu.env import EnvLoc
-    from algutils.paths import TransPath
-
-    labels = {'dataset': 'FT3D',
-              'scene': 'A_0000_0007',
-              'gamma': '1',
-              'avr': '1',
-              'dpe_avr': '1',
-              'alg': 'MoUNFcV4_3_3_base',
-              'ver': '0.0',
-              'cfg': 'c8a6',
-              'ext': 'tif',
-              'kind': 'feat',
-              'sub': 'own',
-              'view': 'L',
-              'res': 2,
-              'internal': 'encoder.left_feat_2',
-              'data': 5.0}
-    evals_sink = SinkRepo(dataset_or_scheme=SchemeRM('bench_evals'),
-                          root=EnvLoc.EVALS.first_existing() or EnvLoc.EVALS.first)
-    generated_path = evals_sink.path(no_tag=True, **labels)
-    tp = TransPath(SchemeRM('bench_evals').search.pattern)
-    parsed_labels = tp.regex.parse(str(generated_path), method='search')
-    labels.pop('data', None)
-    labels = {k: str(v) for k, v in labels.items()}
-    assert parsed_labels == labels

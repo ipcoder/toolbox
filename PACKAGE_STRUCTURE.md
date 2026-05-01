@@ -1,196 +1,198 @@
 # Package Structure Guide
 
-This document explains the structure of the installable `toolbox` package.
+This workspace is a **monorepo** containing four standalone pip-installable packages
+and two bridge modules that wire them together.
 
-## Current Structure
+## Architecture
 
 ```
-/code/
-├── pyproject.toml          # Modern Python package configuration
-├── setup.py                # Legacy setup script (for compatibility)
-├── MANIFEST.in             # Files to include in distribution
-├── README.md               # Package documentation
-├── CHANGELOG.md            # Version history
-├── INSTALLATION.md         # Installation instructions
-├── .gitignore              # Git ignore patterns
-└── toolbox/                # Main package directory
-    ├── __init__.py         # Package initialization
-    ├── conftest.py         # Pytest configuration
-    ├── datacast/           # Data casting subpackage
-    ├── engines/            # Engine framework subpackage
-    ├── image/              # Image processing subpackage
-    ├── io/                 # I/O operations subpackage
-    ├── math/               # Math utilities subpackage
-    ├── param/              # Parameter management subpackage
-    ├── resman/             # Resource management subpackage
-    ├── utils/              # Utility functions subpackage
-    └── vis/                # Visualization subpackage
+algutils    (standalone)   base utilities, no workspace deps
+    ↑
+datacast    (standalone)   folder scanning, data casting, collection
+    ↑
+resman      (standalone)   resource model framework with discovery
+    ↑
+algovis     (standalone)   image grids, interactive viewers, colormaps
+    ↑
+toolbox.datasets    (bridge)  domain-specific models + factory functions (requires inu)
+toolbox.annotations (bridge)  issue annotation UI + AnnotatingKeyProcessor (requires inu, datacast, algovis)
 ```
 
-## Key Files Explained
+Each standalone package can be installed and used independently.
+The bridge modules live inside the root `toolbox` package and provide
+domain-specific integrations that depend on multiple standalone packages plus `inu`.
 
-### `pyproject.toml`
-- Modern Python packaging configuration (PEP 517/518)
-- Defines package metadata, dependencies, and build system
-- Replaces `setup.py` for modern Python packaging
-- **Action Required**: Update version, author, license, and URLs
+## Directory Layout
 
-### `setup.py`
-- Kept for backward compatibility
-- Minimal file that reads from `pyproject.toml`
-- Can be removed if you only support modern pip/setuptools
+```
+/code/toolbox/                  # Monorepo root (also the "toolbox" package)
+├── pyproject.toml              # Root package config + pixi workspace definition
+├── __init__.py                 # toolbox package init
+├── conftest.py                 # Root-level pytest fixtures
+│
+├── algutils/                   # ── Standalone package ──
+│   ├── pyproject.toml
+│   ├── pixi.toml
+│   ├── src/algutils/           #   distributed code
+│   │   ├── __init__.py
+│   │   ├── cache.py
+│   │   ├── param/
+│   │   └── ...
+│   └── tests/                  #   NOT distributed
+│
+├── datacast/                   # ── Standalone package ──
+│   ├── pyproject.toml
+│   ├── pixi.toml
+│   ├── docs/                   #   project docs (not distributed)
+│   ├── src/datacast/           #   distributed code
+│   │   ├── __init__.py
+│   │   ├── caster.py           #     DataCaster, CasterConfig, Labeler
+│   │   ├── collect.py          #     DataCollection, SinkRepo
+│   │   ├── scan.py             #     GuideScan
+│   │   ├── transtools.py       #     Col, CollectTable, Fetchable
+│   │   ├── transforms.py       #     image transform functions
+│   │   └── labeled.py          #     LabelRules
+│   └── tests/                  #   NOT distributed
+│       ├── test_scheme.py
+│       ├── test_collect.py
+│       └── data/
+│
+├── resman/                     # ── Standalone package ──
+│   ├── pyproject.toml
+│   ├── pixi.toml
+│   ├── docs/                   #   project docs
+│   ├── src/resman/             #   distributed code
+│   │   ├── __init__.py
+│   │   └── resource.py         #     ResourceModel, ModelsManager, locatable
+│   └── tests/                  #   NOT distributed
+│       ├── test_resource.py
+│       └── data/
+│
+├── vis/                        # ── Standalone package (algovis) ──
+│   ├── pyproject.toml
+│   ├── pixi.toml
+│   ├── src/algovis/            #   distributed code
+│   │   ├── __init__.py
+│   │   ├── insight.py          #     imgrid, imhist, KeyProcessor
+│   │   ├── interact.py         #     LinesDrawer, interactive widgets
+│   │   ├── imageviewer.py      #     ImageViewer (Qt-based)
+│   │   ├── mpl_utils.py        #     matplotlib helpers
+│   │   ├── view3d.py           #     3D visualization
+│   │   ├── colormaps/          #     custom colormaps
+│   │   └── poly_to_mask/       #     polygon-to-mask utilities
+│   └── tests/                  #   NOT distributed
+│       ├── test_insight.py
+│       └── test_interact.py
+│
+├── datasets/                   # ── Bridge module (toolbox.datasets) ──
+│   ├── __init__.py             #   re-exports models + factories
+│   ├── models.py               #   DataSourceRM, SchemeRM, DatasetRM, CollectionRM
+│   ├── factories.py            #   create_caster, create_collection, create_sink
+│   └── tests/
+│       ├── test_models.py
+│       ├── test_datasets.py
+│       └── data/
+│
+├── annotations/                # ── Bridge module (toolbox.annotations) ──
+│   ├── __init__.py             #   re-exports IssueCollection, VisIssue, AnnotatingKeyProcessor
+│   ├── visual.py               #   VisIssue, AnnotatingKeyProcessor, show_issues_on_scenes
+│   ├── collect.py              #   IssueCollection
+│   └── tests/
+│       └── test_issues.py
+│
+└── engines/                    # Other toolbox subpackages (not yet extracted)
+```
 
-### `MANIFEST.in`
-- Specifies which files to include in source distribution
-- Includes YAML files, documentation, and other data files
-- Excludes test files and build artifacts
+### Key conventions
 
-### `toolbox/__init__.py`
-- Package initialization file
-- Can expose commonly used classes at package level
-- Currently minimal - expand as needed
+- **src layout**: each standalone package keeps source under `src/<name>/`
+  so that `import <name>` only works after installation (not by accident from cwd).
+- **Tests at project root**: `tests/` is a sibling of `src/`, not inside the
+  distributed package.  Tests import the package the same way users do and are
+  not shipped with `pip install`.
+- **Docs at project root**: `docs/` contains project documentation, not
+  distributed with the package.
 
-## Installation Commands
+## Dependency Graph (acyclic)
 
-### Development Mode (Editable Install)
+| Package               | Depends on                                      |
+|-----------------------|-------------------------------------------------|
+| `algutils`            | third-party only                                |
+| `datacast`            | `algutils` + third-party                        |
+| `resman`              | `algutils` + `datacast` + third-party           |
+| `algovis`             | `algutils` + third-party (matplotlib, numpy ...) |
+| `toolbox.datasets`    | `datacast` + `resman` + `inu`                   |
+| `toolbox.annotations` | `algovis` + `datacast` + `inu`                  |
+| `toolbox`             | all of the above                                |
+
+## Installation
+
+### Full workspace (pixi)
+
 ```bash
-pip install -e .
-```
-This installs the package in "editable" mode, so changes to source code are immediately available.
-
-### Regular Install
-```bash
-pip install .
+cd /code/toolbox
+pixi install
 ```
 
-### With Development Dependencies
+### Editable pip install
+
 ```bash
-pip install -e ".[dev]"
+pip install -e ./algutils -e ./datacast -e ./resman -e ./vis -e .
 ```
 
-### Build Distribution
+### Individual package
+
 ```bash
+pip install -e ./datacast    # just datacast + algutils
+pip install -e ./vis         # just algovis + algutils
+```
+
+## Usage
+
+```python
+# Standalone packages — import directly
+from datacast import DataCaster, DataCollection, CasterConfig
+from datacast.scan import GuideScan
+from resman import resman, ModelsManager, ResourceModel
+from algovis.insight import imgrid, imhist, KeyProcessor
+
+# Bridge — name-based convenience constructors
+from toolbox.datasets import create_caster, create_collection, create_sink
+from toolbox.datasets import DatasetRM, SchemeRM, DataSourceRM
+
+# Bridge — annotations with extensible KeyProcessor
+from toolbox.annotations import AnnotatingKeyProcessor, VisIssue, IssueCollection
+imgrid(im1, im2, key_processor_cls=AnnotatingKeyProcessor)
+
+# Utilities
+from algutils.param import YamlModel, TBox
+from algutils import logger, as_list
+```
+
+## Running Tests
+
+```bash
+# All tests via pixi workspace
+pixi run test
+
+# Individual package
+cd datacast && pytest tests -v
+cd resman && pytest tests -v
+cd vis && pytest tests -v
+
+# Bridge tests (from repo root)
+pytest datasets/tests -v
+pytest annotations/tests -v
+```
+
+## Building Distributions
+
+```bash
+# Individual packages
+cd datacast && python -m build
+cd resman && python -m build
+cd vis && python -m build
+
+# Root toolbox package (includes bridges)
 python -m build
-# Creates dist/toolbox-0.1.0.tar.gz and dist/toolbox-0.1.0-py3-none-any.whl
 ```
-
-## Package Structure Decisions
-
-### Why Flat Structure?
-- Current structure uses a flat layout (package at root level)
-- Simpler than src-layout for this use case
-- No need to restructure existing code
-- Works well with current import patterns (`from toolbox.xxx import yyy`)
-
-### Alternative: src-layout
-If you prefer src-layout:
-```
-/code/
-├── pyproject.toml
-├── src/
-│   └── toolbox/
-│       ├── __init__.py
-│       └── ...
-└── tests/  # Move tests here
-```
-
-To use src-layout, update `pyproject.toml`:
-```toml
-[tool.setuptools.package-dir]
-"" = "src"
-```
-
-## What Gets Included
-
-### Included in Distribution
-- All Python modules (`.py` files)
-- Package data files (`.yml`, `.yaml`, `.json`, `.md`, `.ipynb`, etc.)
-- Type stubs (`py.typed`)
-
-### Excluded from Distribution
-- Test files (`test_*.py`, `conftest.py`)
-- Test data directories
-- Build artifacts (`__pycache__`, `.pyc`, `.pyo`)
-- Development files (`.pytest_cache`, `.mypy_cache`)
-
-## Next Steps
-
-1. **Update `pyproject.toml`**:
-   - Set correct version number
-   - Add your name/email as author
-   - Set correct license
-   - Update repository URLs
-   - Review and adjust dependencies
-
-2. **Update `toolbox/__init__.py`**:
-   - Add version number
-   - Optionally expose commonly used classes
-
-3. **Test Installation**:
-   ```bash
-   pip install -e .
-   python -c "import toolbox; print('Success!')"
-   ```
-
-4. **Build and Test Distribution**:
-   ```bash
-   python -m build
-   pip install dist/toolbox-*.whl
-   ```
-
-5. **Consider Adding**:
-   - `LICENSE` file
-   - `CONTRIBUTING.md` for contributors
-   - `docs/` directory for documentation
-   - CI/CD configuration (GitHub Actions, etc.)
-
-## Publishing to PyPI (Future)
-
-When ready to publish:
-
-1. Create accounts on:
-   - PyPI: https://pypi.org
-   - Test PyPI: https://test.pypi.org
-
-2. Build distributions:
-   ```bash
-   python -m build
-   ```
-
-3. Upload to Test PyPI first:
-   ```bash
-   python -m twine upload --repository testpypi dist/*
-   ```
-
-4. Test installation from Test PyPI:
-   ```bash
-   pip install --index-url https://test.pypi.org/simple/ toolbox
-   ```
-
-5. Upload to PyPI:
-   ```bash
-   python -m twine upload dist/*
-   ```
-
-## Dependencies Management
-
-Current dependencies in `pyproject.toml`:
-- Core: pydantic, pandas, numpy, pyyaml, etc.
-- Dev: pytest, black, flake8, mypy
-
-**Action Required**: Review and update dependency versions based on your actual requirements.
-
-## Testing
-
-Tests are currently in subpackage `tests/` directories. To run:
-
-```bash
-# Install with dev dependencies
-pip install -e ".[dev]"
-
-# Run tests
-pytest toolbox/
-```
-
-Consider consolidating tests in a top-level `tests/` directory if preferred.
-

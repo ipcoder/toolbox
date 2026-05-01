@@ -80,9 +80,9 @@ def test_yaml_model_finalize(tmp_path):
     assert Path(tmp_path, 'my_model_yaml_scheme.json').is_file()
     assert Path(tmp_path, 'my_model_default.yml').is_file()
 
-    # Existing DataSource ResourceModel (skip when toolbox not installed)
-    pytest.importorskip("toolbox.datacast.models")
-    from toolbox.datacast.models import DataSourceRM
+    # Existing DataSource ResourceModel (skip when toolbox.datasets not installed)
+    pytest.importorskip("toolbox.datasets.models")
+    from toolbox.datasets.models import DataSourceRM
     scheme, default = DataSourceRM.write_templates(tmp_path)
     assert scheme.is_file()
     assert default.is_file()

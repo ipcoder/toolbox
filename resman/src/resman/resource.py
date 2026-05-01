@@ -16,7 +16,7 @@ from algutils.filesproc import PathT, Path, normalize, Locator, represents_path
 from algutils.wrap import CaseInsEnum, enum_attr
 
 if TYPE_CHECKING:
-    from toolbox.datacast import DataCaster, DataCollection
+    from datacast import DataCaster, DataCollection
 
 _log = logger('resman')
 
@@ -464,7 +464,7 @@ class ResManager(Generic[RT]):
         """
         # important scheme parameters defined explicitly to appear in the interface
         # add them into the dict of scheme arguments (kwargs):
-        from toolbox.datacast.scan import GuideScan
+        from datacast.scan import GuideScan
 
         if not (pattern := search_kws.pop("pattern", None)):
             if not (pattern := self.model.format_match_pattern()):
@@ -479,7 +479,7 @@ class ResManager(Generic[RT]):
 
         self._scan_par = dict(
             name=f"_Discover<{self.model._kind_name}>",
-            scheme=dict(search=GuideScan(pattern=pattern, method=method, **search_kws)),
+            search=GuideScan(pattern=pattern, method=method, **search_kws),
             **drop_undef(cache=cache)
         )
         self.set_folders(*as_iter(folders))
@@ -664,8 +664,8 @@ class ResManager(Generic[RT]):
         :param cache: True to enable, False to disable, None to let scheme default decide.
         :param progress: if True show collection progress
         """
-        from toolbox.datacast.collect import DataCollection
-        from toolbox.datacast.caster import DataCaster
+        from datacast.collect import DataCollection
+        from datacast.caster import DataCaster
 
         model_name = self.model.__name__
         mode = append and 'append' or 'refresh'
@@ -679,7 +679,7 @@ class ResManager(Generic[RT]):
 
         prev_sz = len(self)
         _log.debug("Creating `%s` discovery datasets for folders %s...", self._kind_name, folders)
-        resource_scanners = [DataCaster(**self._scan_par, source=p) for p in folders]
+        resource_scanners = [DataCaster(**self._scan_par, root=p) for p in folders]
         dc = DataCollection("DiscoveredResources", datasets=resource_scanners,
                             **drop_undef(cache=cache), progress=progress)
         records = dc.db.reset_index()[[*dc.categories]].to_dict(orient='records')
@@ -1209,7 +1209,7 @@ def locatable(
     :param cache: search cache (``DataCaster``) argument - normally ``False`` for resource catalogs
     """
     loc_par = locals().copy()
-    from toolbox.datacast.scan import GuideScan
+    from datacast.scan import GuideScan
     from algutils.datatools import rm_keys
 
     if folders is None:  # Consider: rase Exception?

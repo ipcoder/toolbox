@@ -17,7 +17,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from PyQt5.QtWidgets import QDialog, QApplication, QVBoxLayout
 
-from toolbox.vis.insight import imgrid
+from algovis.insight import imgrid
 from algutils.io.ciif import images_to_ciif
 from algutils.short import unless
 from algutils.io.imread import imread

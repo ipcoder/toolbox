@@ -1,6 +1,6 @@
 import numpy as np
 
-# from toolbox.vis.insight import *
+# from algovis.insight import *
 import matplotlib
 
 import matplotlib.pyplot as plt

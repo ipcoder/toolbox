@@ -15,12 +15,40 @@ from algutils.datatools import Filter
 from algutils.events import Timer
 from algutils.filesproc import Path, root_cropper, root_adder, normalize
 from algutils.fnctools import express_to_kw_func
-from . import models as md
+from .scan import GuideScan
 
-__all__ = ['DataCaster', 'CacheMode']
+__all__ = ['DataCaster', 'CasterConfig', 'CacheMode']
 
 _log = logger('datacast')
 DEFAULT_MODE = CacheMode.KEEP
+
+
+class CasterConfig:
+    """Resolved configuration for a DataCaster, independent of resource models.
+
+    Stores the flat, fully-resolved parameters needed to construct a casting
+    pipeline.  Supports ``.dict()`` for cloning via ``DataCaster(**cfg.dict())``.
+    """
+    __slots__ = ('name', 'root', 'search', 'labels', 'mappings',
+                 'reverse', 'bundle', 'filters', 'sample')
+
+    def __init__(self, *, name: str = None, root: Path | str,
+                 search: GuideScan, labels: dict = None,
+                 mappings: dict = None, reverse: bool = False,
+                 bundle: list | None = None, filters: dict = None,
+                 sample: dict = None):
+        self.name = name
+        self.root = Path(root) if root else None
+        self.search = search
+        self.labels = labels or {}
+        self.mappings = mappings or {}
+        self.reverse = reverse
+        self.bundle = bundle
+        self.filters = filters
+        self.sample = sample
+
+    def dict(self) -> dict:
+        return {k: getattr(self, k) for k in self.__slots__}
 
 
 def path_to_win(lbs):
@@ -39,7 +67,7 @@ class Labeler(YamlModel, hash_exclude=['reverse', 'categories']):
     _pather = pydantic.PrivateAttr()
     _processor = pydantic.PrivateAttr()
 
-    def __init__(self, *, labels, mappings, reverse, search: md.GuideScan, namespace=None, **_):
+    def __init__(self, *, labels, mappings, reverse, search: GuideScan, namespace=None, **_):
         super().__init__(labels=labels, mappings=mappings, reverse=reverse)
 
         self._pather = search._pather
@@ -87,56 +115,48 @@ class DataCaster:
     """
     CacheMode = CacheMode  # allow PathScheme.CacheMode instead of scheme.CacheMode
 
-    def __init__(self, name: str | md.DatasetRM = None, *,
-                 source: md.DataSourceRM | str = None,
-                 scheme: md.SchemeRM | str = None,
-                 filters: dict = None, transforms: dict = None,
-                 sample: md.DSample = None,
-                 labels: None | dict = None,
-                 # -- Not DatasetRM params --
+    def __init__(self, name: str = None, *,
+                 root: Path | str,
+                 search: GuideScan,
+                 labels: dict = None,
+                 mappings: dict = None,
+                 reverse: bool = False,
+                 bundle: list[str] = None,
+                 filters: dict = None,
+                 sample: dict = None,
+                 # -- pipeline params (not part of config) --
                  temp_cache=False, cache: Optional[CacheMode | bool] = True,
                  progress: dict | bool = None):
         """
-        >>> DataCaster('KnownName')
-        >>> DataCaster(md.DatasetRM(source='/', scheme='*'))
-        >>> DataCaster(source='/', scheme='*')
         Create data caster semantic parser for particularly structured files tree.
         ::
             tree -> [pattern] -> files -> [label] -> [filter] -> labeled
+
+        All parameters must be fully resolved (no name-based lookup).
+        For name-based construction (e.g. ``DataCaster('ETH3D')``), use the
+        factory in ``toolbox.datasets``.
         """
-        self.config = md.DatasetRM.from_config(locals(), undefined=False, ignore=True)
-
-        scheme = self.config.scheme
-        search = scheme.search
-        labeler = Labeler(labels=scheme.labels | (self.config.labels or {}),
-                          mappings=scheme.mappings, search=search,
-                          reverse=scheme.reverse, namespace=self.labeling_namespace)
-
+        self.config = CasterConfig(
+            name=name, root=root, search=search, labels=labels,
+            mappings=mappings, reverse=reverse, bundle=bundle,
+            filters=filters, sample=sample,
+        )
+        labeler = Labeler(labels=self.config.labels,
+                          mappings=self.config.mappings, search=self.config.search,
+                          reverse=self.config.reverse, namespace=self.labeling_namespace)
         self.categories = labeler.categories
-        self.bundle = scheme.bundle  # ! MUST be after compile_schemes! validates categories
-
-        # --------------------------- building the pipeline -------------------------
+        self.bundle = self.config.bundle or []
         is_win = os.name == 'nt'
-        # There is a challenge to support both POSIX and Windows, since two things are potentially
-        # system dependent: search patterns provided by scheme and cached paths.
-        # In selected approach both are in POSIX,
-        # to allow using same schemes and cached data from everywhere.
-        # To implement that, the processing pipeline should be adjusted to the current system:
-        #  1. The first scanning stage is configured to convert WIN->POSIX BEFORE matching
-        #     the pattern, so that POSIX pattern works AND resulted matched path is POSIX.
-        #     Note, that only works when matching not the full path, where are problems with disks, etc.
-        #  2. Since step 1 ensures path label is cached and propagated as POSIX,
-        #     on Windows additional final stage is added to convert generated labels['path'] to Win
-
         stages = [
-            CachedPipe.Source(search.scanner(self.root, is_win), 'wlk', cfg=search.to_yaml()),
+            CachedPipe.Source(self.config.search.scanner(self.root, is_win), 'wlk',
+                              cfg=self.config.search.to_yaml()),
             CachedPipe.Map(labeler.processor, 'lbl', cfg=labeler.to_yaml()),
         ]
-        if filters := self.config.filters:
-            stages.append(CachedPipe.Filter(Filter(filters), 'flt', cfg=yaml.dump(filters)))
-        if is_win:  # Create non-cachable stage converting path from stored POSIX into Win
+        if self.config.filters:
+            stages.append(CachedPipe.Filter(Filter(self.config.filters), 'flt',
+                                            cfg=yaml.dump(self.config.filters)))
+        if is_win:
             stages.append(CachedPipe.Map(path_to_win, 'win', serial=NoSerial(), mode=CacheMode.PASS))
-
         self.cached_pipe = CachedPipe(
             stages=stages, folder=Path(self.root) / '.cache', mode=CacheMode(cache), temp=temp_cache,
             serial=PickleRelativePath(self.root, safe=False), progress=progress
@@ -161,7 +181,7 @@ class DataCaster:
 
     @property
     def root(self):
-        return self.config.source.root
+        return self.config.root
 
     def __repr__(self):
         _list = lambda _: f"[{', '.join(_)}]" if _ else ""
@@ -169,7 +189,7 @@ class DataCaster:
             root=str(self.root),
             bundle=_list(self.bundle),
             cats=_list(self.categories),
-            regex=self.config.scheme.search._pather.regex.regex.pattern
+            regex=self.config.search._pather.regex.regex.pattern
         )
         items = (f"{k}: {v}" for k, v in info.items() if v)
         return '\n\t'.join([str(self), *items])
@@ -219,7 +239,7 @@ class DataCaster:
 
         if cfg := self.config.sample:
             from algutils.pdtools import sample
-            ds = sample(ds, **cfg.dict())
+            ds = sample(ds, **(cfg if isinstance(cfg, dict) else cfg.dict()))
         return ds
 
     def copy(self):

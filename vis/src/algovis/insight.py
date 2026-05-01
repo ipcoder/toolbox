@@ -3,7 +3,6 @@ from __future__ import annotations
 __all__ = ['hist_range', 'cmp', 'imhist', 'imgrid', 'max_figsize', 'grid_layout']
 
 import logging
-import pickle
 from typing import Union, Iterable, Any, Literal
 from warnings import warn
 
@@ -15,9 +14,7 @@ import numpy as np
 import regex as re
 
 import algutils.codetools as cdt
-from inu.env import EnvLoc
 from algutils import as_list
-from toolbox.vis.interact import LinesDrawer
 
 _log = logging.getLogger(__name__)
 _log.debug('loading %s ...' % __name__)
@@ -477,14 +474,7 @@ class KeyProcessor:
     cmaps = {'P': 'pink', 'J': 'jet', 'W': 'wide', 'R': 'rain',
              'Y': 'gray', 'Z': 'coolworm', 'V': 'viridis'}
 
-    annotate_regions = {'t': 'tilt', 'ntx': 'no texture', 'r': 'reflective', 'h': 'hard',
-                        'e': 'easy', 'g': 'general'}
-
-    def __init__(self, figure, axis, toolbar=None, reference_folder=None):
-        self.annotated_regions = None
-        self.reference_folder = reference_folder
-        self.poly_drawer = None
-        self.drawer = None
+    def __init__(self, figure, axis, toolbar=None):
         self.canvas = figure.canvas
         self.toolbar = toolbar
         self.multi_cursor = None
@@ -532,37 +522,7 @@ class KeyProcessor:
                     [select_axes(i, False) for i in selected_ids.copy()]
                     select_axes(ax_id, True)
             elif event.key.startswith('alt+'):
-                key = event.key[4:]
-                if key == 'a':
-                    # Annotate using LinesDrawer
-                    if not self.drawer:
-                        self.drawer = LinesDrawer(self.canvas, self.axis.flatten(),
-                                                  regions=self.annotate_regions.values())
-                    if self.drawer == 'closed':
-                        #  restarting with previous annotated regions
-                        self.drawer = LinesDrawer(self.canvas, self.axis.flatten(),
-                                                  regions=self.annotated_regions)
-                    region = 'general'  # default
-                    self.drawer.select_shape(region)
-                elif key in self.annotate_regions:
-                    self.drawer.select_shape(self.annotate_regions[key])
-                elif key == 'H':
-                    # help - print all regions
-                    print(f"Annotate regions: {self.annotate_regions}, "
-                          f"select region: Alt+<key> \n     "
-                          f"save annotation: Alt+s, \n"
-                          f"load annotation: Alt+l \n"
-                          f"Stop annotation: Alt+q")
-                elif key == 's':
-                    if not self.reference_folder:
-                        self.reference_folder = EnvLoc.EVALS.first_existing() / 'annotations'
-                    with open(self.reference_folder / self.axis[0].title._text.split(' ')[0], 'wb') as f:
-                        pickle.dump(self.drawer.regions, f, pickle.HIGHEST_PROTOCOL)
-                elif key == 'l':
-                    print('Not implemented yet')
-                elif key == 'q':
-                    self.annotated_regions = self.drawer.regions
-                    self.drawer = 'closed'
+                self.on_alt_key(event.key[4:])
             elif len(event.key) == 1:
                 if event.key == '?':
                     cmaps_str = '\n'.join((' ' * 40 + f'{k} - {v}') for k, v in self.cmaps.items())
@@ -601,6 +561,10 @@ class KeyProcessor:
             self.canvas.draw()
         except Exception as e:
             print(e)
+
+    def on_alt_key(self, key):
+        """Override in subclasses to handle Alt+<key> events (e.g. annotations)."""
+        pass
 
 
 def _assign_cmaps(cmaps, num):
@@ -643,7 +607,7 @@ def assign_args_names(args, *, names, func_name, nest_level, enum_form):
     (in the order of priority and if available):
      - explicitly given names list in the `names` argument
      - one element of the tuple of every `inputs` elements (if provided as a tuple)
-     - ``toolbox.datacast.Labeled`` objects, name will be automatically 'flatten'
+     - ``datacast.Labeled`` objects, name will be automatically 'flatten'
      - keys of the dictionary (if the element is a dict)
      - variables names as passed to the the upper level function call
      - enumerated formatted string, where sequential index of the argument is passed to format the provided string
@@ -677,7 +641,7 @@ def assign_args_names(args, *, names, func_name, nest_level, enum_form):
                 pairs.append(inp)
                 arg_id += 1
         elif isinstance(inp, dict) and hasattr(inp, 'flat'):  # Labeled data type
-            pairs.append(inp.flat())  # inp: toolbox.datacast.label.Labeled
+            pairs.append(inp.flat())  # inp: datacast.label.Labeled
         elif hasattr(inp, 'items'):  # dictionary must be in form of {'title': image}
             pairs.extend((val, key) for key, val in inp.items())  # swap key-val order!
             arg_id += len(inp)
@@ -731,7 +695,8 @@ def imgrid(*images,
            window_title: str = None,
            out: bool | Literal['axs', 'fig', 'ims', 'all'] = False,
            adj_clim=False, ticks='xy', mosaic=None,
-           pad=None, fig=None, toolbar=None, block=None, hist=False, dpi=None, tight=True,
+           pad=None, fig=None, toolbar=None, key_processor_cls=None,
+           block=None, hist=False, dpi=None, tight=True,
            **imkw) -> None | list | dict:
     """Show titled images or histogram. Return axis list.
 
@@ -741,7 +706,7 @@ def imgrid(*images,
         - mosaic
 
     :param images: arguments list of images in form of:
-            arrays, tuples, dictionaries, toolbox.datacast.Labeled items
+            arrays, tuples, dictionaries, datacast.Labeled items
             [image1, image2, (image3, 'title'), image4, dict].
                 dictionary must be in form of {'title': image}
     :param titles: allows to override or complete missing image titles.
@@ -846,15 +811,16 @@ def imgrid(*images,
 
     img_axs = {}
     plt_axs = {}
+    kp_cls = key_processor_cls or KeyProcessor
     if is_mosaic:
         all_axes = grid.create_axes(fig, sharex='images', sharey='images')
         axs = [all_axes[code] for code in grid.images]
         for k, v in all_axes.items():
             (img_axs if k in grid.images else plt_axs).update({k: v})
-        KeyProcessor(fig, axs, toolbar)
+        kp_cls(fig, axs, toolbar)
     else:
         axs = fig.subplots(*grid, sharex='all', sharey='all')
-        KeyProcessor(fig, axs, toolbar)  # connect key-processor
+        kp_cls(fig, axs, toolbar)  # connect key-processor
 
         # Make axes list flat and leave in there only those with images
         axs = list(axs.flat) if isinstance(axs, np.ndarray) else [axs, ]

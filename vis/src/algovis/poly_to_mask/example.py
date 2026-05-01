@@ -1,5 +1,5 @@
 import pylab as pl
-from toolbox.vis.poly_to_mask.roipoly import roipoly
+from algovis.poly_to_mask.roipoly import roipoly
 
 # create image
 img = pl.ones((100, 100)) * range(0, 100)

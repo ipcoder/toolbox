@@ -1,8 +1,8 @@
 from pathlib import Path
 
-from toolbox.datacast.models import DataSourceRM, DatasetRM
-from toolbox.resman import ModelsManager
-from toolbox.resman.resource import AutoScan
+from toolbox.datasets.models import DataSourceRM, DatasetRM
+from resman import ModelsManager
+from resman.resource import AutoScan
 
 test_data = Path(__file__).parent / 'data'
 
@@ -26,12 +26,6 @@ def test_dataset(env_locs, tiny_stereo):
 
 
 def test_datacast():
-    ds = DatasetRM('tiny')
-
-    from toolbox.datacast import DataCaster
-
-    print(ds.dict())
-
-    cst = DataCaster(**(ds.dict() | {'sample': 1}))
+    from toolbox.datasets import create_caster
+    cst = create_caster('tiny', sample={'selection': 1})
     print(cst.collect())
-    ds.dict()

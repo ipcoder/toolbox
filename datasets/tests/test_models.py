@@ -3,15 +3,14 @@ import re
 import pytest
 from pydantic import ValidationError
 
-from toolbox.resman import ResNameError
-from toolbox.resman.resource import ResModelError
+from resman import ResNameError, ResourceModelError
 
 
 def test_datasource(env_locs):
     # --------------- DataSourceRM ---------------
     existing_root = '/tmp'
     non_existing_root = '~/notexists'
-    from toolbox.datacast.models import DataSourceRM
+    from toolbox.datasets.models import DataSourceRM
     # FROM root
     DataSourceRM(existing_root)
     assert DataSourceRM(non_existing_root)  # INVALID root -> PASS
@@ -32,7 +31,7 @@ def test_datasource(env_locs):
 
 
 def test_scheme(env_locs):
-    from toolbox.datacast.models import SchemeRM
+    from toolbox.datasets.models import SchemeRM
     # --------------- SchemeRM ---------------
     SchemeRM(r'\w+.txt')  # valid pattern from SchemeRM constructor initialization
     with pytest.raises(re.error):
@@ -61,7 +60,7 @@ def test_dataset(env_locs):
     The SETUP phase creates [SchemeRM, SourceRM] X [layout, NO layout].
     Those are later used to test various use-cases.
     """
-    from toolbox.datacast.models import DataSourceRM, SchemeRM, DatasetRM
+    from toolbox.datasets.models import DataSourceRM, SchemeRM, DatasetRM
     # --------------- DatasetRM ---------------
     # --------------- Register Resources ---------------
     scm_mgr = SchemeRM._manager
@@ -109,7 +108,7 @@ def test_dataset(env_locs):
 
 
 def test_collection(env_locs):
-    from toolbox.datacast.models import DataSourceRM, SchemeRM, CollectionRM, DatasetRM
+    from toolbox.datasets.models import DataSourceRM, SchemeRM, CollectionRM, DatasetRM
     # --------------- CollectionRM ---------------
     DataSourceRM._manager.add_resource(DataSourceRM('FT3D', root='/tmp'))
     SchemeRM._manager.add_resource(SchemeRM('FT3D', search=dict(pattern=r'\w+')))

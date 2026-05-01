@@ -20,9 +20,6 @@ with Timer(f" ← {__file__} imports", "timing", min=0.1, pre=f' → importing i
     if TYPE_CHECKING:
         import numpy as np
         from .caster import DataCaster
-        from toolbox.datacast.models import DatasetRM, CollectionRM, SchemeRM
-
-        _DS = Union[DatasetRM, DataCaster, str]
 
 PathT = Union[Path, str]
 
@@ -218,105 +215,76 @@ class DataCollection:
         dc.cacher is True and dc._create_cacher(True)
         return dc
 
-    def __init__(self, name: str | CollectionRM | _DS = None, *,
-                 datasets: Union[_DS, Iterable[_DS]] = None,
-                 label_datasets: bool = None,
+    def __init__(self, name: str = None, *,
+                 datasets: Union[DataCaster, Iterable[DataCaster]] = None,
                  query: str | dict | Tuple[str, str | dict] = None,
                  bundle: list[str] = None,
-                 # below are not CollectionRM arguments
-                 unique=False,  # Consider: not needed argument?
+                 unique=False,
                  data: str | Iterable[str] = DATA_COL,
                  drop: str | Iterable[str] = None,
                  cache: CacheMode | bool | Literal['LOAD', 'SAVE', 'KEEP', 'PASS'] = None,
                  temp_cache: bool | Path | str = None,
-                 calc_cache: PathT | Cacher | bool = False,  # Consider: remove calc_cache* and may be calc!
+                 calc_cache: PathT | Cacher | bool = False,
                  calc_cache_rel: PathT | bool = True,
                  progress: bool = False,
                  description: str = None):
         """ Create collection of labeled paths from multiple schemes
-        extracting labels from data's folders structure (or another DataCollection).
+        extracting labels from data's folders structure.
 
-        :param name: optional name identifying the dataset and its **scheme**
-        :param datasets: the desired datasets to collect in the form of
-        `DataCaster` or `DatasetRM`.
+        Requires explicit ``datasets`` (list of DataCaster instances).
+        For name-based construction (e.g. ``DataCollection('KITTI')``), use
+        the factory in ``toolbox.datasets``.
+
+        :param name: optional name identifying the collection
+        :param datasets: DataCaster instances to collect
         :param query: optional query to select only a subset of the collection
                       in str or dict form
         :param data: which labels categories to consider as data (others - index)
         :param unique: leave only labels with multiple unique values
-        the schemes-defined transforms to replace them in read_trans column.
         :param drop: try to drop those categories if that keeps the index unique
-        :param cache: optionally override caster's caching mode (`None` - don't)
-        :param temp_cache: optionally override caster's `temp` argument (`None` - don't)
-        :param calc_cache: (for calculations over the DS (not scheme!), values:
-                    - path to cache folder or
-                    - Cacher instance or
-                    - False to disable cacher
-                    - True for automatic path (self.common_root / .cache)
-        :param calc_cache_rel: store cached paths tables relative to this folder
-               which can be provided explicitly or:
-                - False | None | '' - store absolute
-                - True | 'common' - use this self.common_root folder
-                Ignored if cache is Cacher object
+        :param cache: optionally override caster's caching mode (``None`` - don't)
+        :param temp_cache: optionally override caster's ``temp`` argument (``None`` - don't)
+        :param calc_cache: path to cache folder, Cacher, True for auto, False to disable
+        :param calc_cache_rel: store cached paths relative to this folder
         :param description: String that describes the collection.
         """
         from .caster import DataCaster
-        from .models import DatasetRM, CollectionRM
-
-        # --- deal with different supported arguments formats ----
-        if isinstance(name, (DatasetRM, DataCaster)) and datasets is None:
-            name, datasets = None, [name]
-        elif not (name is None or isinstance(name, (str, CollectionRM))):
-            raise ValueError("DataCollection init requires either "
-                             "name (str or collection) or datasets arguments")
-        cfg = locals().copy()  # turn arguments into CollectionRM kwargs
-
-        #  ------------------ Build DataCasters and collect data --------------------------
-        changes = drop_undef(cache=cache, temp_cache=temp_cache)  #
+        if datasets is None:
+            raise ValueError("DataCollection requires explicit 'datasets' argument. "
+                             "For name-based lookup use toolbox.datasets.create_collection().")
+        if isinstance(datasets, DataCaster):
+            datasets = [datasets]
+        changes = drop_undef(cache=cache, temp_cache=temp_cache)
 
         def prep_caster(ds):
             if isinstance(ds, DataCaster):
                 return DataCaster(**(ds.config.dict() | changes)) if changes else ds
-            return DataCaster(**(ds if isinstance(ds, dict) else {'name': ds}), **changes)
+            if isinstance(ds, dict):
+                return DataCaster(**ds, **changes)
+            raise TypeError(f"Expected DataCaster or dict, got {type(ds)}")
 
-        if not datasets:  # first *find* config with datasets from the collection name - then build casters
-            self.config = CollectionRM.from_config(cfg, ignore=True, undefined=False)
-            self.casters = [prep_caster(d) for d in as_iter(self.config.datasets)]
-        else:  # first build casters from the *provided datasets* - then create a new config
-            self.casters = [prep_caster(d) for d in as_iter(datasets, no_iter=(DataCaster, DatasetRM))]
-            cfg['datasets'] = [ds.config for ds in self.casters]  # update dataset from casters config
-            self.config = CollectionRM.from_config(cfg, ignore=True, undefined=False)
-
+        self.casters = [prep_caster(d) for d in as_iter(datasets, no_iter=(DataCaster,))]
         if not self.casters:
             raise ValueError("Can't create collection without datasets")
         from pandas import concat
         db = CollectTable(concat(cst.collect(progress=progress) for cst in self.casters))
-
-        # ----------------------  set principal attributes -----------------
-        self.name = self.config.name
+        self.name = name or ','.join(filter(None, (c.config.name for c in self.casters)))
         self.description = description
         self._history: list[DataCollection._HistoryItem] = []
         bundle = as_list(bundle) or sum(
             filter(None, map(lambda s: s.bundle, self.casters)), []
         )
         self.bundle = list(set(bundle))
-
         if db.empty:
             self._db = db
             return
-
-        #  ---------------------- Filters ----------------------------
-        # Here all the categories found in the data are in the columns
-        # Filter query may use categories which are removed later
         sq, dq = ('', query) if isinstance(query, dict) else (query, {})
         db: CollectTable = self._select(db, sq, **dq)
-        if unique:  # if requested to remove categories with same value
+        if unique:
             db = db.drop(columns=db.columns[(db.nunique(dropna=False) == 1)])
-
-        # --------- Setup data and index columns
-        data: set = as_list(data, collect=set)  # explicitly requested columns
+        data: set = as_list(data, collect=set)
         db = self._init_transforms(db, data)
         self._db = self._init_index(db, data, drop)
-
         self.cacher: Cacher = self._create_cacher(calc_cache, calc_cache_rel)
 
     def drop_flat_categories(self, *drop, keep=None, only_nan=False, fail=False,
@@ -1147,43 +1115,43 @@ class SinkRepo:
     SAVE_KWS_TAG = 'imsave_args'
     _labels_tag = 'DATA_LABELS'
 
-    def __init__(self, dataset_or_scheme: DatasetRM | SchemeRM | dict | str, root: str = None,
-                 data='data', select: str | dict = None, labels: dict = None, create_dir=True):
+    def __init__(self, *, root: str | Path, search: 'GuideScan',
+                 labels: dict = None, mappings: dict = None,
+                 scheme_name: str = None, scheme_description: str = None,
+                 data='data', select: str | dict = None,
+                 extra_labels: dict = None, create_dir=True):
         """
-        Construct write only repository according to given `dataset` model or `scheme`.
+        Construct write only repository from resolved scheme parameters.
 
-        Scheme can be provided as a model, name or yml location, or formatting pattern
-        and requires provisioning of `root` folder.
+        For name-based construction from ``DatasetRM`` or ``SchemeRM``, use
+        the factory in ``toolbox.datasets``.
 
-        :param dataset_or_scheme: `scheme` (or its location or name) OR `dataset`
-        :param root: folder to save under or `None` if `dataset` in first argument
+        :param root: folder to save under
+        :param search: GuideScan defining the path pattern
+        :param labels: scheme label definitions
+        :param mappings: scheme label mappings
+        :param scheme_name: name for display purposes
+        :param scheme_description: description for display purposes
         :param data: key of the label with data (image) (default: 'data')
         :param select: conditions on labels as dict or eval string
-        :param create_dir: if False and don't exist raise `NotADirectroryError`
+        :param extra_labels: labels to add to every saved item
+        :param create_dir: if False and don't exist raise ``NotADirectoryError``
         """
         from .caster import Labeler
-        from .models import SchemeRM, DatasetRM
-
-        if root is None and isinstance(dataset_or_scheme, str):
-            dataset_or_scheme = DatasetRM(dataset_or_scheme)
-
-        if isinstance(dataset_or_scheme, DatasetRM):
-            root = root or dataset_or_scheme.source.root
-            dataset_or_scheme = dataset_or_scheme.scheme
-
-        self.scheme = SchemeRM(dataset_or_scheme)
-        self.scheme.reverse = True  # required to build paths
-        self.labeler = Labeler(**dict(self.scheme))  # unlike x.dict() keeps internal models!
+        from .scan import GuideScan
+        self.labeler = Labeler(labels=labels or {}, mappings=mappings or {},
+                               search=search, reverse=True)
+        self.scheme_name = scheme_name
+        self.scheme_description = scheme_description
         self.root = Path(root)
         if not self.root.is_dir():
             msg = f'SinkRepo folder does not exist: {str(self.root)}'
             if not create_dir:
                 raise NotADirectoryError(msg)
             _log.warning(msg)
-
         self._data_key = data
         self._filter = _dict_to_query(select)
-        self.labels = labels or {}
+        self.labels = extra_labels or {}
 
     def __str__(self):
         return f"<{type(self).__name__}>({self.root}){self.labeler._pather.form.str}"
@@ -1191,19 +1159,12 @@ class SinkRepo:
     def __repr__(self):
         from algutils.strings import indent_lines as ind
         seq = lambda _: ', '.join(_)
-
         return f"<{type(self).__name__}>({self.root}):\n" + \
             ind(self.labeler._pather.form.str,
                 ind(f"- categories: {seq(self.labeler.categories)}",
                     f"- anonymous: {seq(self.labeler.anonymous)}"),
-                f"sceheme: {self.scheme.name}",
-                self.scheme.description or '')
-
-    @property
-    def dataset(self):
-        """Dataset model of the repository"""
-        from .models import DatasetRM
-        return DatasetRM(scheme=self.scheme, source=self.root)
+                f"scheme: {self.scheme_name or ''}",
+                self.scheme_description or '')
 
     def _prepare_path(self, labels: dict, no_tag=None, exist_ok=None) -> Path:
         path = self.path(no_tag=no_tag, **labels)

@@ -1,5 +1,5 @@
 from inu.env import EnvLoc
-from toolbox.vis.annotations import IssueCollection
+from toolbox.annotations import IssueCollection
 from pathlib import Path
 
 def test_issues():

@@ -7,7 +7,7 @@ from typing import Literal, get_args, Collection, Iterable
 from toolbox.engines.core import AlgoEngine
 from inu.env import EnvLoc
 from algutils.param.models import YamlModel, pyd
-from toolbox.resman.resource import ResourceModel, locatable
+from resman.resource import ResourceModel, locatable
 from algutils import drop_undef
 from algutils.filesproc import PyModuleLocator
 from algutils.logs import getLogger, error

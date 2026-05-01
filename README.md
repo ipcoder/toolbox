@@ -4,12 +4,18 @@ A comprehensive Python toolbox for data management, processing, and visualizatio
 
 ## Installation
 
-### From source
+### From source (with pixi workspace)
 
 ```bash
 git clone https://github.com/yourusername/toolbox.git
 cd toolbox
-pip install -e .
+pixi install
+```
+
+### Editable pip install
+
+```bash
+pip install -e ./algutils -e ./datacast -e ./resman -e .
 ```
 
 ### Development installation
@@ -18,28 +24,38 @@ pip install -e .
 pip install -e ".[dev]"
 ```
 
+## Package Architecture
+
+The workspace contains three **standalone pip-installable packages** and a bridge module:
+
+```
+algutils    →  base utilities (no workspace deps)
+datacast    →  folder scanning, data casting, collection  (depends on algutils)
+resman      →  resource model framework with discovery    (depends on algutils + datacast)
+toolbox.datasets  →  bridge wiring resman models to datacast core (depends on all above + inu)
+```
+
 ## Usage
 
 ```python
-from toolbox.datacast import DataCaster, DataCollection
-from toolbox.param import YamlModel, TBox
-from toolbox.resman import resman
-# ... etc
+# Standalone packages — import directly
+from datacast import DataCaster, DataCollection, SinkRepo
+from resman import resman, ModelsManager, ResourceModel
+
+# Bridge — name-based convenience constructors
+from toolbox.datasets import create_caster, create_collection, create_sink
+caster = create_caster('ETH3D')
+dc = create_collection('SmallQualityEval')
+
+# Utilities
+from algutils.param import YamlModel, TBox
 ```
 
-## Package Structure
+## Other Subpackages
 
-- `toolbox.datacast` - Data casting and collection tools
-- `toolbox.param` - Parameter and configuration management
-- `toolbox.resman` - Resource management
-- `toolbox.utils` - Utility functions
-- `toolbox.io` - Input/output operations
-- `toolbox.image` - Image processing
-- `toolbox.math` - Mathematical utilities
-- `toolbox.vis` - Visualization tools
-- `toolbox.engines` - Engine framework
+- `toolbox.vis` — Visualization tools
+- `toolbox.engines` — Engine framework
 
 ## License
 
 [Your License Here]
-

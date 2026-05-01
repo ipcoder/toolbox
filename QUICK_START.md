@@ -6,77 +6,72 @@
 
 ```bash
 cd /code/toolbox
-pip install -e .
+pixi install          # installs everything via workspace
 ```
 
-This installs the package in "editable" mode, so changes to source code are immediately available.
-
-### With Development Dependencies
+Or with pip (editable mode):
 
 ```bash
-pip install -e ".[dev]"
+pip install -e ./algutils -e ./datacast -e ./resman -e .
 ```
 
 ## Verify Installation
 
 ```bash
-python -c "import toolbox; print('Success! Toolbox version:', toolbox.__version__)"
+python -c "import datacast; import resman; print('Success!')"
 ```
 
 ## Usage
 
-Imports work exactly as before:
-
 ```python
-from toolbox.datacast import DataCaster, DataCollection
-from toolbox.param import YamlModel, TBox
-from toolbox.resman import resman
-from toolbox.utils import logger, as_list
-from toolbox.io import imread, imwrite
-```
+# Core data casting — standalone package
+from datacast import DataCaster, DataCollection, CasterConfig
+from datacast.scan import GuideScan
 
-## Building Distribution
+# Resource management — standalone package
+from resman import resman, ModelsManager, ResourceModel
 
-```bash
-# Install build tools
-pip install build
+# Name-based factories — bridge module (requires all packages + inu)
+from toolbox.datasets import create_caster, create_collection, create_sink
+caster = create_caster('ETH3D')
+dc = create_collection('KITTI', query=dict(subset='train'))
 
-# Build distributions
-python -m build
-
-# Distributions will be in dist/
+# Utilities — standalone package
+from algutils.param import YamlModel, TBox
+from algutils import logger, as_list
 ```
 
 ## Project Structure
 
 ```
-/code/toolbox/              # Project root (also the package)
-├── pyproject.toml          # Package configuration
-├── setup.py                # Legacy setup (optional)
-├── README.md               # Package documentation
-├── __init__.py             # Package initialization
-├── datacast/               # Data casting subpackage
+/code/toolbox/              # Monorepo root (also the toolbox package)
+├── pyproject.toml          # Root package config + pixi workspace
+├── __init__.py             # toolbox package init
+├── algutils/               # Standalone package: utilities
+│   ├── pyproject.toml
+│   ├── pixi.toml
+│   └── src/algutils/
+├── datacast/               # Standalone package: data casting
+│   ├── pyproject.toml
+│   ├── pixi.toml
+│   └── src/datacast/
+├── resman/                 # Standalone package: resource management
+│   ├── pyproject.toml
+│   ├── pixi.toml
+│   └── src/resman/
+├── datasets/               # Bridge module (toolbox.datasets)
+│   ├── __init__.py
+│   ├── models.py
+│   └── factories.py
 ├── engines/                # Engine framework
-├── image/                  # Image processing
-├── io/                     # I/O operations
-├── math/                   # Math utilities
-├── param/                  # Parameter management
-├── resman/                 # Resource management
-├── utils/                  # Utility functions
 └── vis/                    # Visualization tools
 ```
 
-## Next Steps
+## Building Distributions
 
-1. Update `pyproject.toml`:
-   - Version number
-   - Author information
-   - License
-   - Repository URLs
-
-2. Update `toolbox/__init__.py`:
-   - Set version number
-   - Optionally expose commonly used classes
-
-3. Test your installation and imports!
-
+```bash
+# Build individual packages
+cd datacast && python -m build && cd ..
+cd resman && python -m build && cd ..
+python -m build   # root toolbox package
+```

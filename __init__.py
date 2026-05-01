@@ -1,25 +1,23 @@
 """
 Toolbox - A comprehensive Python toolbox for data management, processing, and visualization.
 
-Main subpackages:
-    - datacast: Data casting and collection tools
-    - resman: Resource management
-    - vis: Visualization tools
-    - engines: Engine framework
+Standalone packages (pip-installable independently):
+    - algutils: Utilities, image, and math (io, param, paths, transforms, etc.)
+    - datacast: Folder scanning, data casting, and collection (resman-free core)
+    - resman: Resource model framework with registration and discovery
 
-Utilities, image, and math (io, param, paths, transforms, hist, geom, etc.) are provided by ``algutils``.
+Bridge modules (part of this package, wiring standalone packages together):
+    - toolbox.datasets: Domain-specific resource models and factory functions
+                        connecting resman resource models with datacast core
+
+Other subpackages:
+    - toolbox.vis: Visualization tools
+    - toolbox.engines: Engine framework
 """
 
-__version__ = "0.1.0"  # Update this to match pyproject.toml
-
-# Optionally expose commonly used classes at package level
-# Uncomment and add as needed:
-# from toolbox.datacast import DataCaster, DataCollection
-# from algutils.param import YamlModel, TBox
-# from toolbox.resman import resman
+__version__ = "0.1.0"
 
 __all__ = [
     "__version__",
-    # Add commonly used exports here
 ]
 

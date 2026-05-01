@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 from pydantic import validator
 
-from toolbox.resman.resource import ModelsManager, locatable, _log, ResourceModel, ResNameError
+from resman.resource import ModelsManager, locatable, _log, ResourceModel, ResNameError
 from algutils import logs
 
 logs.setup_logs(name_from=__file__,

@@ -495,7 +495,7 @@ class Fetchable:
 
         If source already has valid data, data is not reloaded if ``reuse is True``.
 
-        The default condition of *validity* (``toolbox.datacast.transtols.is_data``)
+        The default condition of *validity* (``datacast.transtools.is_data``)
         can be replaced by providing alternative function: ``reuse=new_data_cond``.
 
         If not ``inplace``, fetch returns a new table without changing the source,

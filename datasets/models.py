@@ -7,10 +7,10 @@ from typing import Optional, Union, Literal, Iterable
 
 from pydantic import DirectoryPath, root_validator, validator, Field, BaseModel, ValidationError
 
-from toolbox.datacast.scan import GuideScan
+from datacast.scan import GuideScan
 from inu.env import EnvLoc
-from toolbox.resman import resource as rc
-from toolbox.resman.resource import ResModelError
+from resman import resource as rc
+from resman.resource import ResModelError
 from algutils import logger, as_list, Strings
 
 _log = logger('datacast')
@@ -420,6 +420,6 @@ class CollectionRM(rc.ResourceModel, desc="Collection of Datasets", patterns='.c
 
 
 def discover(*models, **kwargs):
-    from toolbox.resman import resman
+    from resman import resman
     models = models or ('datasource', 'dataset', 'scheme', 'collection')
     return resman.discover(*models, **kwargs)

@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import Optional
 
 from inu.env import EnvLoc
-from toolbox.resman import ModelsManager, ResourceModel  # initialize the resource management sub-system
+from resman import ModelsManager, ResourceModel  # initialize the resource management sub-system
 from algutils.logs import setup_logs, logger
 
 
@@ -40,11 +40,11 @@ def case_create_resource():
 
 @log_func
 def case_init_models_management():
-    from toolbox.datacast import models as dm
+    from toolbox.datasets import models as dm
     # At this stage no specific resource types are registered in the mm!
     mm._reset()      # but we reset anyway for robustness of the test
     assert not mm.list()
-    # Let's import model of datasets management resources defined by the ``datacast`` package.
+    # Let's import model of datasets management resources defined by the ``datasets`` bridge.
     mm.register_models(dm)
     # Now all the resource Models (Datasource, Scheme, Dataset, DataCollection)
     # from there are registered in the ModelManager
@@ -58,7 +58,7 @@ def case_init_models_management():
 @log_func
 def case_resource_creation():
 
-    from toolbox.datacast.models import DataSourceRM
+    from toolbox.datasets.models import DataSourceRM
     src = DataSourceRM.parse_file(EnvLoc.DATA / 'datasource.yml')  # config from yaml file - Standard
 
     data_root = EnvLoc.DATA.first_existing()
@@ -99,44 +99,36 @@ def case_resource_discoveries():
 
 @log_func
 def scenario_work_with_collection():
-    from toolbox.datacast import DataCollection
+    from toolbox.datasets import create_collection
     mm.discover()
-    dc = DataCollection('KITTI',
-                        drop=[*DataCollection.DROP_COL, 'ext'],
-                        query=dict(subset='train'))
+    dc = create_collection('KITTI',
+                           query=dict(subset='train'))
 
     mm.discover('scheme')
     src = mm.get('source')
     src.discover('/mnt/algo/DataSets/depth', only=False)
     mm.discover('scheme')
 
-    dc = DataCollection('MID14S', temp_cache=True)
+    dc = create_collection('MID14S', temp_cache=True)
     mm.discover('collect')
 
 
 @log_func
 def case_create_data_caster():
-    from toolbox.datacast import DataCaster
-    my_dataset = DataCaster(name='my_dataset',
-                            source=EnvLoc.DATA / 'my_dataset',
-                            scheme='{width}_{height}_{color}_{material}.jpg',
-                            filters=dict(color='BLUE',
-                                         material=['steal', 'wood'],
-                                         width=float(10).__le__,
-                                         condition_square='height == width'))
+    from toolbox.datasets import create_caster
+    my_dataset = create_caster(source=EnvLoc.DATA / 'my_dataset',
+                               scheme='{width}_{height}_{color}_{material}.jpg',
+                               filters=dict(color='BLUE',
+                                            material=['steal', 'wood'],
+                                            width=float(10).__le__,
+                                            condition_square='height == width'))
 
 
 @log_func
 def scenario_typical_flow():
-    # Setup - import models and discover resources
+    from toolbox.datasets import create_caster, create_collection
     case_resource_discoveries()
-
-    # Initialization of recipients
-    from toolbox.datacast import DataCollection, DataCaster
-
-    eth3d = DataCaster('ETH3D')
-
-    dc = DataCollection(datasets=eth3d)
-    dc = DataCollection(datasets=['MIDS12', 'FT3D'])
-    dc = DataCollection('SmallQualityEval')
-
+    eth3d = create_caster('ETH3D')
+    dc = create_collection(datasets=[eth3d])
+    dc = create_collection(datasets=['MIDS12', 'FT3D'])
+    dc = create_collection('SmallQualityEval')

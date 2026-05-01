@@ -1,0 +1,5 @@
+name: FT3D
+description: Simple configuration for testing
+schemes:
+    -   source: FT3D
+        scheme: FT3D
