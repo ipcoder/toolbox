@@ -1,0 +1,61 @@
+name: test-trainer
+model:
+  path: inu.pipelines.tests.dummy_train_module.DummyModule
+  params: {norm_params: {prior: False, norm_style: 'simple_11'}}
+  description: 'Test Configuration with DummyModule'
+
+
+data:
+  name: enhance-training-testing
+  inputs:
+    - { kind: image, view: L, alg: cam }
+    - { kind: image, view: R, alg: cam }
+    - { kind: disp, view: L, alg: GT }
+  datasets:
+    train:
+      collection: tiny
+      prior: False
+      augmentations: {}
+
+    val:
+      collection: tiny
+      prior: False
+      augmentations: {}
+
+  dataloaders:
+    train:
+      batch_size: 1
+      num_workers: 0
+      shuffle: True
+      pin_memory: True
+    val:
+      batch_size: 1
+      num_workers: 0
+      shuffle: False
+      pin_memory: True
+
+loss_functions:
+  loss_func:
+      path: torch.nn.MSELoss
+      name: MSELoss
+      params: {}
+
+
+optim:
+  optimizer:
+    AdamW_all_param:
+      name: AdamW
+      params: { lr: 0.0001, weight_decay: 0.0001, }
+
+training:
+  seed: 42
+  lightning_config:
+    max_epochs: 2
+    val_check_interval: 1
+  callbacks:
+      - ModelCheckpoint_val_loss:
+        name: ModelCheckpoint
+        params: { monitor: val_loss, mode: min, save_top_k: 1, save_last: True,
+            filename: '{epoch}-{val_loss:.2f}', verbose: True}
+  retrain: True
+  save_model_graph: False

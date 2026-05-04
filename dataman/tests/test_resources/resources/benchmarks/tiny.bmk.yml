@@ -1,0 +1,68 @@
+name: tiny
+description: 'Benchmark for testing'
+adapter: disparity   # adapter module full or relative name (in inu.eval package)
+                     # must include
+process:
+    parallel: 12
+
+inputs: tiny
+
+prevaluation:  # pre-evaluation stage (algorithm to run before the)
+    skip_existing: True  # to avoid running DPE during test
+    algorithms:
+        NU40:
+            engine: NU40
+            # make sure labels are not boolean
+            label:
+                prior: 1
+
+evaluation:  # algorithms evaluation stage
+    skip_existing: False
+    algorithms:
+#        Dummy:
+#            kind: 'disp'
+#            engine: DummyDispEngine
+#            config:
+#                training_results: DummyModule_0.0_5dd0_d779_1e11_test-training-curriculum
+#                epoch: 4
+#                conf_output: s2 # for confidence measurements
+#        Dummy2:
+#            kind: 'disp'
+#            engine: DummyDispEngine
+#            config:
+#                training_results: DummyModule_0.0_5dd0_d779_1e11_test-training-curriculum
+#                epoch: last
+#                conf_output: s2 # for confidence measurements
+
+        Dummy1:
+            kind: prior_disp_conf
+            engine: Enhance_PriorDispConfLTEng
+            config:
+                training_results: aaaa_bbbb_cccc
+                epoch: 31
+
+        Dummy2:
+            kind: prior_disp_conf
+            engine: Enhance_PriorDispConfLTEng
+            config:
+                training_results: aaaa_bbbb_cccc
+                epoch: last
+
+measurement:  # measurement stage
+
+    classifiers:   # parameters of classifiers algorithms
+        contours: {}
+        regions: {}
+
+    measure:     # what to measure, and how (parameters)
+        regions:  # regions of location-specific measurements
+            visible: ~(occl | invl)
+            tilted: tilt & ~(occl | invl)
+            edges: edge & ~(occl | invl)
+            notxtr: ~txtr & ~edge & ~(occl | invl)
+
+        # specify which metrics to measure, and how (optionally provide params)
+        accuracy: {}      # empty dict - augment missing by default parameters
+        confidence: True  # True == use default parameters
+        contours: False   # False | None - disable this metric
+

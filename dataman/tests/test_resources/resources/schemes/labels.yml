@@ -1,0 +1,47 @@
+# This file defines labeling and categorization conventions for different domains.
+# The content must follow this structure:
+#
+#       domain_name:
+#           - label_name:
+#               - allowed_label_value
+#               - another_allowed_value
+#                 ...
+#           - another_label       # may not have fixed allowed values!
+#           - yet_another_label:
+#             ...
+#       another_domain:
+#           ...
+
+common:      # This domain extends by default all the others
+  units: [m, cm, mm, um, deg rad]
+  msr:
+    - MSE   # Mean square err
+    - RMSE  # Root MS
+    - MAE   # Mean absolute error
+    - MAPE  # Mean absolute percentage error
+  alg:      # algorithm (producer) of the data
+    - cam   # data produced by camera
+    - c2g   # produced by color2grey conversion
+    - GT    # Ground Truth measurements (usually from dataset)
+    - datacast    # comes from the dataset - when alg is required but there are no specifics (like GT)
+
+stereo:
+  kind:
+    - disp
+    - confd
+    - image
+    - regns
+    - depth
+    - model
+  view: [L, R]
+  rgns:
+    - mult  # generic multi-level
+    - invl  # invalid
+    - occl  # occluded
+    - nocl  # not occluded
+    - edge  # discontinuity
+    - tilt  # tilted surface
+    - txtr  # textured surface
+    - ntxt  # textureless
+    - conf  # binary mask for confidence
+

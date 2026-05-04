@@ -1,0 +1,33 @@
+name: tiny
+
+search: '{scene}/((?P<kind>[^\d\\/]+)(?P<view>\d)|(?=calib))(?P<alg>[^_\s\\/]*)_?(?P<chn>[a-z]*)\.(?P<ext>tif|jpg|txt)'
+
+mappings:
+    view: { "0": L, "1": R }
+    kind: { im: image, mask: rgns }
+    alg: { nocc: ds }  # occlusion and invalid regions information
+
+bundle: [ scene ]
+
+# assign `alg` and `chn` for imaging data
+if alg == '' and chn == '':
+    chn: RGB
+    alg: cam
+
+if alg == '' and chn == 'gray':
+    alg: c2g             # grey images were produced by rgb2grey
+
+if chn == '': # preferable to have NaN than empty string
+    chn: null
+
+if alg == 'calib':
+    kind: meta
+
+if alg == 'cam':
+    range: "0,255"
+
+transforms if alg == 'GT':
+    recode: { from_to: [ .inf, .nan ] }     # recode .inf -> .nan
+
+transforms if kind == 'rgns' and alg == 'ds': # transform into Regions type
+    regions: { invl: 0, occl: 128, nocc: 255 }

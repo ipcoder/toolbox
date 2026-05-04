@@ -1,0 +1,11 @@
+{
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  "python.testing.cwd": "${workspaceFolder}",
+  "python.testing.autoTestDiscoverOnSaveEnabled": true,
+  "python.testing.pytestArgs": ["-c", "${workspaceFolder}/pytest.ini"],
+  "python.defaultInterpreterPath": "${workspaceFolder}/.pixi/envs/default/bin/python",
+  "terminal.integrated.env.linux": {
+    "MPLBACKEND": "Agg"
+  }
+}

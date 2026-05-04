@@ -1,6 +1,6 @@
-# Toolbox
+# ialgdev (monorepo meta-package)
 
-A comprehensive Python toolbox for data management, processing, and visualization.
+The repository root installs **`ialgdev`**, a **dependency-only** meta-package: it has no `iad.*` code, only **`[project.dependencies]`** on the **`ialdev-*`** wheels. You do **not** need setuptools in particular—any **PEP 517** backend that can ship an empty wheel is fine. This repo uses **setuptools** for that; **Flit** is kept for the real libraries (one `[tool.flit.module]` each) and is a poor fit for a module-less meta wheel.
 
 ## Installation
 
@@ -12,11 +12,13 @@ cd toolbox
 pixi install
 ```
 
-### Editable pip install
+### Editable pip install (all `ialdev-*` libraries)
 
 ```bash
-pip install -e ./algutils -e ./datacast -e ./resman -e .
+pip install -e ./algutils -e ./fio -e ./imgtools -e ./maths -e ./vis -e ./dataman -e ./annotations -e ./engines -e .
 ```
+
+The I/O project lives under **`fio/`** (not `io/`) so the directory name does not shadow the standard library `io` module.
 
 ### Development installation
 
@@ -26,35 +28,41 @@ pip install -e ".[dev]"
 
 ## Package Architecture
 
-The workspace contains three **standalone pip-installable packages** and a bridge module:
+PyPI distribution names and import namespaces:
 
+| Folder        | `pip install`     | `import`        |
+|---------------|-------------------|-----------------|
+| `algutils/`   | `ialdev-core`     | `iad.core`      |
+| `fio/`        | `ialdev-io`       | `iad.io`        |
+| `imgtools/`   | `ialdev-img`      | `iad.img`       |
+| `maths/`      | `ialdev-maths`    | `iad.maths`     |
+| `vis/`        | `ialdev-vis`      | `iad.vis`       |
+| `dataman/`    | `ialdev-dataman`  | `iad.dataman`   |
+| `annotations/`| `ialdev-annotations` | `iad.annotations` |
+| `engines/`    | `ialdev-engines`  | `iad.engines`   |
+
+## Publishing to PyPI (Flit)
+
+The `ialdev-*` packages are built with **[Flit](https://flit.pypa.io/)** (`flit_core` backend in each `pyproject.toml`). From the repo root with Pixi:
+
+```bash
+pixi install   # provides ``flit`` and ``build`` CLI
+cd algutils && pixi run flit build --no-use-vcs && pixi run flit publish
 ```
-algutils    →  base utilities (no workspace deps)
-datacast    →  folder scanning, data casting, collection  (depends on algutils)
-resman      →  resource model framework with discovery    (depends on algutils + datacast)
-toolbox.datasets  →  bridge wiring resman models to datacast core (depends on all above + inu)
-```
+
+Repeat `build` / `publish` in `fio/`, `imgtools/`, `maths/`, `vis/`, `dataman/`, `annotations/`, `engines/` as needed. Use `--no-use-vcs` if the working tree is not clean (Flit otherwise checks version control for sdist contents).
+
+Configure PyPI credentials with **keyring**, `~/.pypirc`, or `FLIT_USERNAME` / `FLIT_PASSWORD` / tokens per Flit docs.
+
+The **`ialgdev`** meta-package at the repository root uses **setuptools**; publish it separately only if you distribute that name (e.g. `python -m build` at repo root).
 
 ## Usage
 
 ```python
-# Standalone packages — import directly
-from datacast import DataCaster, DataCollection, SinkRepo
-from resman import resman, ModelsManager, ResourceModel
-
-# Bridge — name-based convenience constructors
-from toolbox.datasets import create_caster, create_collection, create_sink
-caster = create_caster('ETH3D')
-dc = create_collection('SmallQualityEval')
-
-# Utilities
-from algutils.param import YamlModel, TBox
+from iad.core.param import YamlModel, TBox
+from iad.dataman.datacast import DataCollection, SinkRepo
+# See each package’s docs for full APIs.
 ```
-
-## Other Subpackages
-
-- `toolbox.vis` — Visualization tools
-- `toolbox.engines` — Engine framework
 
 ## License
 

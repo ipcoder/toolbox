@@ -1,5 +1,5 @@
 """
-Setup script for toolbox package.
+Setup script for the ialgdev meta-package.
 
 This file is kept for backward compatibility.
 Modern builds should use pyproject.toml.

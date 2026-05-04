@@ -1,0 +1,94 @@
+name: test-training-curriculum
+
+model:
+  path: inu.pipelines.tests.dummy_train_module.DummyModule
+  params: {norm_params: {prior: False, norm_style: 'simple_11'}}
+  description: 'Test Configuration with DummyModule, for testing curriculum'
+
+data:
+  name: enhance_training_testing
+  inputs:
+    - { kind: image, view: L, alg: cam }
+    - { kind: image, view: R, alg: cam }
+    - { kind: disp, view: L, alg: GT }
+  datasets:
+    train:
+      collection:
+      curriculum:
+          0: tiny
+          1:
+            tiny: 0.5
+            interpolate: True
+          3:
+            tiny: 1
+            interpolate: True
+          5:
+            tiny: 0
+            tiny_2: 1
+      prior: False
+      augmentations: {}
+
+    val:
+      collection: tiny
+      prior: False
+      augmentations: {}
+
+    val_2:
+      collection:
+      curriculum:
+        0:
+          tiny: 0.5
+          tiny_2: 0
+      prior: False
+      augmentations: {}
+
+    val_3:
+      collection:
+      curriculum:
+        0:
+          tiny: 1
+          tiny_2: 0
+      prior: False
+      augmentations: {}
+
+  dataloaders:
+    train:
+      batch_size: 1
+      num_workers: 0
+      shuffle: True
+      pin_memory: True
+    val:
+      batch_size: 1
+      num_workers: 0
+      shuffle: False
+      pin_memory: True
+
+loss_functions:
+  loss_func:
+      path: torch.nn.MSELoss
+      name: MSELoss
+      params: {}
+
+optim:
+  optimizer:
+    AdamW_all_param:
+      name: AdamW
+      params: { lr: 0.0001, weight_decay: 0.0001, }
+
+training:
+  seed: 42
+  lightning_config:
+    max_epochs: 5
+    val_check_interval: 1
+    reload_dataloaders_every_n_epochs: 1
+
+  callbacks:
+      - curriculum:
+        name: inu.pipelines.training.pl_callbacks.Curriculum
+      - ModelCheckpoint:
+        name: ModelCheckpoint
+        params: { monitor: step, mode: min, save_top_k: 5, save_last: True,
+            filename: '{epoch}-{step:.2f}', verbose: True}
+  retrain: True
+  save_model_graph: False
+

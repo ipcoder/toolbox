@@ -1,0 +1,21 @@
+#description: Output from DPE of Primitive low polygons and simple lighting simulation movies
+#dataset: Monkaa disparity outputs from DPE
+#domain: stereo
+#aliases: [ monkaa_nu ]
+
+name: Monkaa_output_from_NU
+dataset: MONK
+search: '(?P<kind>(frames_cleanpass)|(disparity))/(?P<view>(left)|(right))/(?P<scene>\w+)\.(?P<ext>\w+)'
+
+bundle: [ dataset, subset, scene ]
+
+mappings:
+    subset: str.lower
+    kind: { frames_cleanpass: image, disparity: disp }
+    view: { left: L, right: R }
+
+if kind == 'image':
+    alg: cam
+
+if kind == 'disp':
+    alg: GT

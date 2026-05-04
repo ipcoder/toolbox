@@ -1,11 +1,11 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["flit_core>=3.11,<4"]
+build-backend = "flit_core.buildapi"
 
 [project]
-name = "algovis"
+name = "ialdev-vis"
 version = "0.1.0"
-description = "Visualization utilities: image grids, interactive viewers, colormaps, and matplotlib helpers"
+description = "iad.vis — visualization utilities (image grids, viewers, colormaps, matplotlib helpers)"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
@@ -20,7 +20,8 @@ classifiers = [
 ]
 
 dependencies = [
-    "algutils",
+    "ialdev-core",
+    "ialdev-io",
     "matplotlib>=3.5.0",
     "numpy>=1.20.0",
     "regex>=2021.0.0",
@@ -35,7 +36,7 @@ jupyter = [
     "ipywidgets>=7.0.0",
     "IPython>=7.0.0",
 ]
-3d = [
+"3d" = [
     "open3d>=0.15.0",
     "ipyvolume>=0.6.0",
 ]
@@ -44,14 +45,11 @@ dev = [
     "pytest-cov>=3.0.0",
 ]
 all = [
-    "algovis[qt,jupyter,3d,dev]",
+    "ialdev-vis[qt,jupyter,3d,dev]",
 ]
 
-[tool.setuptools.packages.find]
-where = ["src"]
-
-[tool.setuptools.package-data]
-algovis = ["**/*.yml", "**/*.yaml", "**/*.json", "**/*.md"]
+[tool.flit.module]
+name = "iad.vis"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

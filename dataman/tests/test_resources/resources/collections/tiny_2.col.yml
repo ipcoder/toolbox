@@ -1,0 +1,5 @@
+name: tiny_2
+description: Collection of tiny images for testing
+
+datasets: [ tiny ]
+label_datasets: True

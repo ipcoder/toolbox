@@ -1,16 +1,18 @@
+# Meta-package ``ialgdev``: dependency-only aggregate (``packages = []``); setuptools is one PEP 517 backend that builds an empty wheel cleanly.
+# Libraries under ``algutils/``, ``fio/``, … use Flit — see README.
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "toolbox"
+name = "ialgdev"
 version = "0.1.0"  # Update this as needed
-description = "A comprehensive toolbox for data management, processing, and visualization"
+description = "Meta package: aggregates ialdev-* libraries (install from repo root or PyPI)"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 authors = [
-    {name = "Your Name", email = "your.email@example.com"}
+    { name = "ipap" },
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -25,11 +27,14 @@ classifiers = [
 ]
 
 dependencies = [
-    "algutils",
-    "datacast",
-    "resman",
-    "algovis",
-    "inu",
+    "ialdev-core",
+    "ialdev-maths",
+    "ialdev-io",
+    "ialdev-img",
+    "ialdev-dataman",
+    "ialdev-vis",
+    "ialdev-annotations",
+    "ialdev-engines",
     "pandas>=1.3.0",
     "numpy>=1.20.0",
     "pydantic>=2.0",
@@ -37,7 +42,7 @@ dependencies = [
     "ruamel.yaml>=0.15.0",
     "regex>=2021.0.0",
     "tqdm>=4.60.0",
-    "frozendict>=2.0.0",
+    "frozendict>=2.0.0", "pytest>=9.0.3,<10", "ipython>=9.13.0,<10", "pygraphviz>=1.14,<2",
 ]
 
 [project.optional-dependencies]
@@ -49,8 +54,7 @@ dev = [
     "mypy>=0.950",
 ]
 all = [
-    "toolbox[dev]",
-    # Add other optional dependencies here
+    "ialgdev[dev]",
 ]
 
 [project.urls]
@@ -60,30 +64,10 @@ Repository = "https://github.com/yourusername/toolbox"
 Issues = "https://github.com/yourusername/toolbox/issues"
 
 [tool.setuptools]
-packages = ["toolbox", "toolbox.datasets", "toolbox.annotations", "toolbox.engines"]
+packages = []
 
-[tool.setuptools.package-data]
-toolbox = [
-    "**/*.yml",
-    "**/*.yaml",
-    "**/*.json",
-    "**/*.md",
-    "**/*.ipynb",
-    "**/*.puml",
-    "**/*.jscm",
-    "**/*.org",
-    "py.typed",
-]
-
-[tool.setuptools.package-dir]
-# The repo root IS the toolbox package (i.e. __init__.py is at the root, not in a toolbox/ subdir)
-"toolbox" = "."
-
-[tool.pytest.ini_options]
-testpaths = ["datasets/tests", "annotations/tests"]
-python_files = ["test_*.py"]
-python_classes = ["Test*"]
-python_functions = ["test_*"]
+# Pytest defaults for this workspace: ``pytest.ini`` at repo root (IDE / ``pytest`` from repo root).
+# Subpackages keep ``[tool.pytest.ini_options]`` for ``cd package && pytest``.
 
 [tool.black]
 line-length = 100
@@ -91,27 +75,9 @@ target-version = ["py310", "py311", "py312"]
 include = '\.pyi?$'
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.12"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = false
-packages = ["toolbox"]
 
-
-[tool.pixi.workspace]
-channels = ["conda-forge"]
-platforms = ["linux-64"]
-
-[tool.pixi.pypi-dependencies]
-toolbox = { path = ".", editable = true }
-algutils = { path = "./algutils", editable = true }
-datacast = { path = "./datacast", editable = true }
-resman = { path = "./resman", editable = true }
-algovis = { path = "./vis", editable = true }
-
-[tool.pixi.environments]
-default = { solve-group = "default" }
-all = { features = ["all"], solve-group = "default" }
-dev = { features = ["dev"], solve-group = "default" }
-
-[tool.pixi.tasks]
+# Pixi workspace / tasks / conda deps: see ``pixi.toml`` at repo root (preferred over embedding ``[tool.pixi]`` here).

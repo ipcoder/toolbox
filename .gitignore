@@ -23,7 +23,7 @@ share/python-wheels/
 *.egg
 MANIFEST
 **/.pixi/
-
+**/.cache/
 
 # Virtual environments
 venv/
@@ -31,8 +31,10 @@ env/
 ENV/
 .venv
 
-# IDEs
-.vscode/
+# IDEs (share pytest / Pixi workspace hints; keep other paths local)
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
 .idea/
 *.swp
 *.swo
@@ -71,4 +73,3 @@ Thumbs.db
 !.pixi/config.toml
 /algutils/.pixi/
 .remember/*
-

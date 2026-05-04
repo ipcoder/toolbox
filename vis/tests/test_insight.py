@@ -7,7 +7,7 @@ _interact = False
 def test_imhist():
     """ imhist(im, *args, out=False, **kw)
     """
-    from algovis.insight import imhist, plt
+    from iad.vis.insight import imhist, plt
     im = rand(10, 10)
     imhist(im, im)
     imhist(im, bins=10)
@@ -22,7 +22,7 @@ def test_imgrid_out():
                     - 'ims' - image objects
                     - 'all' - all above in this order
     """
-    from algovis.insight import imgrid, plt
+    from iad.vis.insight import imgrid, plt
     inputs = rand(10, 10), rand(10, 10)
     axs = imgrid(*inputs, out=False, window_title="out=False")
     assert axs == None
@@ -50,7 +50,7 @@ def test_imgrid_out():
 def test_imgrid_clim():
     """ adj_clim: [False]|True - Should add clim sliders or not
     """
-    from algovis.insight import imgrid, plt
+    from iad.vis.insight import imgrid, plt
     im1 = rand(10, 10)
     im2 = rand(10, 10)
 
@@ -93,7 +93,7 @@ def test_imgrid_window_title():
     """
     image = rand(10, 10)
 
-    from algovis.insight import imgrid, plt
+    from iad.vis.insight import imgrid, plt
     imgrid(image, window_title="WINDOW TITLE")
     if _interact: plt.show()
     pass
@@ -109,7 +109,7 @@ def test_imgrid_hist():
                  False - don't show histogram
     """
 
-    from algovis.insight import imgrid, plt
+    from iad.vis.insight import imgrid, plt
     image = rand(10, 10)
 
     imgrid(image, hist=False, titles=["hist=False: don't show histogram"])
@@ -137,7 +137,7 @@ def test_imgrid_titles():
     im4 = rand(10, 10)
     two_images = [im1, im2]
 
-    from algovis.insight import imgrid, plt
+    from iad.vis.insight import imgrid, plt
     imgrid(*two_images, im3, im4, titles='1 2'.split(), hist=False, out=True)
     if _interact: plt.show()
 
@@ -150,7 +150,7 @@ def test_imgrid_titles():
 def test_imgrid_auto_clim():
     im1 = rand(10, 10)
     im2 = rand(10, 10)
-    from algovis.insight import imgrid, plt
+    from iad.vis.insight import imgrid, plt
 
     axs = imgrid(im1, titles=['1'], hist=False, out=True, clim='auto')
     assert len(axs) == 1
@@ -165,7 +165,7 @@ def test_imgrid_auto_clim():
 @pytest.mark.slow
 def test_imgrid_simple():
 
-    from algovis.insight import imgrid, plt
+    from iad.vis.insight import imgrid, plt
     imgrid(rand(10, 10))
     if _interact: plt.show()
 
@@ -183,7 +183,7 @@ def test_imgrid_simple():
 def test_imgrid_dict():
     images = dict(one=rand(10, 10), two=rand(10, 10))
 
-    from algovis.insight import imgrid, plt
+    from iad.vis.insight import imgrid, plt
     imgrid(images)
     if _interact: plt.show()
 
@@ -196,7 +196,7 @@ def test_imgrid_dict():
 def test_imgrid_grid():
     images = rand(6, 10, 10)
 
-    from algovis.insight import imgrid, plt
+    from iad.vis.insight import imgrid, plt
     imgrid(*images, grid=(1, 4))
     if _interact: plt.show()
 
@@ -222,7 +222,7 @@ def test_mosaic_parser():
         .B.
         '''
     ]
-    from algovis.insight import MosaicParser
+    from iad.vis.insight import MosaicParser
     show = False
 
     for c in codes:
@@ -263,7 +263,7 @@ def test_mosaic_parser():
 
 
 if __name__ == '__main__':
-    from algovis import insight
+    from iad.vis import insight
 
     insight.max_figsize = (12, 5)
     insight.max_figsize = (7, 7)

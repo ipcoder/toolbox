@@ -1,0 +1,31 @@
+[build-system]
+requires = ["flit_core>=3.11,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "ialdev-io"
+version = "0.1.0"
+description = "iad.io — image and structured file I/O (imread, formats, CIIF, inu helpers, etc.)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = [
+    "ialdev-core",
+    "numpy>=1.20.0",
+    "pillow>=8.0.0",
+    "scikit-image>=0.19.0",
+    "tifffile",
+    "zfpy",
+    "pyyaml>=5.4.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0.0"]
+
+[tool.flit.module]
+name = "iad.io"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+pythonpath = ["src"]

@@ -1,0 +1,31 @@
+[build-system]
+requires = ["flit_core>=3.11,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "ialdev-maths"
+version = "0.1.0"
+description = "iad.maths — histograms, geometry, regression"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = [
+    "ialdev-core",
+    "numpy>=1.20.0",
+    "pandas>=1.3.0",
+    "numba>=0.55.0",
+    "scikit-learn>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "ialdev-vis",
+]
+
+[tool.flit.module]
+name = "iad.maths"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]

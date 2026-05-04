@@ -1,0 +1,5 @@
+name: 'bench_evals'
+search:
+#    pattern: '(?P<dataset>\w+)/(?P<scene>\w+):(?P<gamma>[^_]+)_(?P<avr>\d+)_(?P<dpe_avr>\d+)/(?P<kind>[^_/]+)_(?P<alg>\w+)_(?P<ver>[^_/]+)_(?P<cfg>[^_/]+)_(?P<view>[LR]+)\.tif'
+    pattern: (?P<dataset>\w+)/(?P<scene>[\w|-]+)/(?P<kind>[^_]+)#(?P<alg>\w+)#(?P<ver>[^_/]+)#(?P<cfg>[^_/]+)#(?P<view>[LR]){*}?\.(?P<ext>tif|png)
+    max_depth: 10

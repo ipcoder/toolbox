@@ -1,0 +1,5 @@
+name: tiny
+description: Tiny version of the Middlebury 2014 stereo dataset for tests
+alias: tiny
+domain: depth
+realism: true

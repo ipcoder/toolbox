@@ -1,10 +1,11 @@
-from inu.env import EnvLoc
-from toolbox.annotations import IssueCollection
+from iad.annotations import IssueCollection, EnvLoc
 from pathlib import Path
 
 def test_issues():
-
+     
     issues = IssueCollection.from_csv(EnvLoc.ISSUES.first_existing() / 'selector_issues.csv')
+    assert issues
+
     orig_issues = issues.copy()
     issue = {'issue_type': '1',  'alg': 'alg_1', 'id': 0, 'scene': 'A', 'dataset': 'FT3D',
              'polygon': ((1,2), (2,3), (3,4))}
