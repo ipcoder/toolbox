@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+usage() {
+  cat <<'EOF'
+Usage:
+  ./publish_pypi <package> [<package> ...]
+  ./publish_pypi all
+
+Accepted package identifiers:
+  - Folder names: algutils fio imgtools maths dataman vis
+  - Distribution names:
+      ialdev-core ialdev-io ialdev-img ialdev-maths
+      ialdev-dataman ialdev-vis
+
+Notes:
+  - Publishes to PyPI via `flit publish` from each package folder.
+  - Authentication should be configured for flit (token, keyring, or ~/.pypirc).
+EOF
+}
+
+resolve_package_dir() {
+  local name="$1"
+  case "$name" in
+    algutils|ialdev-core|core) echo "algutils" ;;
+    fio|ialdev-io|io) echo "fio" ;;
+    imgtools|ialdev-img|img) echo "imgtools" ;;
+    maths|ialdev-maths|math) echo "maths" ;;
+    dataman|ialdev-dataman) echo "dataman" ;;
+    vis|ialdev-vis) echo "vis" ;;
+#    annotations|ialdev-annotations) echo "annotations" ;;
+#    engines|ialdev-engines) echo "engines" ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+if [[ $# -lt 1 ]]; then
+  usage
+  exit 1
+fi
+
+declare -a requested=()
+
+if [[ "$1" == "all" ]]; then
+  requested=(algutils fio imgtools maths dataman vis)
+else
+  declare -A seen=()
+  for raw_name in "$@"; do
+    if ! pkg_dir="$(resolve_package_dir "$raw_name")"; then
+      echo "Unknown package: $raw_name" >&2
+      usage
+      exit 2
+    fi
+    if [[ -z "${seen[$pkg_dir]:-}" ]]; then
+      requested+=("$pkg_dir")
+      seen["$pkg_dir"]=1
+    fi
+  done
+fi
+
+for pkg_dir in "${requested[@]}"; do
+  pkg_path="$ROOT_DIR/$pkg_dir"
+  pyproject="$pkg_path/pyproject.toml"
+
+  if [[ ! -d "$pkg_path" ]]; then
+    echo "Package folder missing: $pkg_path" >&2
+    exit 3
+  fi
+  if [[ ! -f "$pyproject" ]]; then
+    echo "Missing pyproject.toml in: $pkg_path" >&2
+    exit 4
+  fi
+  if ! rg -q 'build-backend\s*=\s*"flit_core\.buildapi"' "$pyproject"; then
+    echo "Skipping $pkg_dir: not configured for flit_core.buildapi" >&2
+    continue
+  fi
+
+  echo "Publishing $pkg_dir ..."
+  (
+    cd "$pkg_path"
+    flit publish
+  )
+done
+
+echo "Done."
