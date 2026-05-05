@@ -4,9 +4,9 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from iad.core import pdtools as pdt
-from iad.core.label import Keys
-from iad.core.pdtools import add_row
+from iad.core.data import pdtools as pdt
+from iad.core.data.label import Keys
+from iad.core.data.pdtools import add_row
 from iad.core.wrap import name_tuple
 
 

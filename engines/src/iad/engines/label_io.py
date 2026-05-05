@@ -5,9 +5,9 @@ from typing import Iterator, Tuple, Any, Dict
 
 import numpy as np
 
-from iad.core.nptools import Array
-from iad.core.label import Labels
-from iad.core.pdtools import DTable
+from iad.core.data.nptools import Array
+from iad.core.data.label import Labels
+from iad.core.data.pdtools import DTable
 from iad.core.strings import compact_repr, hash_str
 
 MISSING = dcls.MISSING
@@ -121,7 +121,7 @@ class Labeled(Labels):
     @classmethod
     def from_table(cls, db: DTable, *, missing=KeyError, undef=()):
         """
-        Create instance of this Labeled type from :cls:`iad.core.pdtools.DataTable`
+        Create instance of this Labeled type from :cls:`iad.core.data.pdtools.DataTable`
         All the pre-defined keys are used to query the index.
         All the undefined keys must be in the table and are initialized
 
@@ -318,7 +318,7 @@ class DataC:
         """
         tp = tp or self.type(key)
         if issubclass(type(tp), type) and not isinstance(value, tp):
-            from iad.core.pdtools import DataTable, DataSeries
+            from iad.core.data.pdtools import DataTable, DataSeries
             if isinstance(tp, DCType) and isinstance(value, (DataTable, DataSeries)):
                 value = tp.from_table(value)
             else:
@@ -359,7 +359,7 @@ class DataC:
         else:
             fields = self.to_dict()
 
-        from iad.core.pdtools import DataTable
+        from iad.core.data.pdtools import DataTable
         return DataTable.from_dict(fields, orient='index')
 
     def to_dict(self):

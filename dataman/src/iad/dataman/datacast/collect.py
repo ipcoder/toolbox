@@ -10,7 +10,7 @@ with Timer(f" ← {__file__} imports", "timing", min=0.1, pre=f' → importing i
 
     # utils import
     from iad.core import as_list, logger, drop_undef, as_iter
-    import iad.core.pdtools as pdt
+    import iad.core.data.pdtools as pdt
     from iad.core.cache import CacheMode, Cacher
 
     # internal imports

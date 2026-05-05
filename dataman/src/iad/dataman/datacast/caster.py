@@ -8,12 +8,12 @@ from pydantic.v1 import PrivateAttr
 import regex as re  # Using more advanced regex package!
 import yaml
 
-from iad.core.param import YamlModel
+from iad.dataman.pydantools import YamlModel
 from iad.core import logger, as_list
 from iad.core.cache import CachedPipe, CacheMode, Pickle, CacheInvalidError, NoSerial
 from iad.core.datatools import Filter
 from iad.core.events import Timer
-from iad.core.filesproc import Path, root_cropper, root_adder, normalize
+from iad.core.fs.filesproc import Path, root_cropper, root_adder, normalize
 from iad.core.fnctools import express_to_kw_func
 from .scan import GuideScan
 
@@ -238,7 +238,7 @@ class DataCaster:
             _log.warning(f"{self} found no matching files!")
 
         if cfg := self.config.sample:
-            from iad.core.pdtools import sample
+            from iad.core.data.pdtools import sample
             ds = sample(ds, **(cfg if isinstance(cfg, dict) else cfg.dict()))
         return ds
 

@@ -2,7 +2,7 @@
 
 
 def test_sorting():
-    from iad.core.pydantools.fixed_pydantic_yaml.model import YamlModel
+    from iad.dataman.pydantools.fixed_pydantic_yaml.model import YamlModel
 
     class B(YamlModel):
         val: str = "val"

@@ -2,16 +2,16 @@
 """
 from __future__ import annotations
 
+import logging
 import os
 import re
 import sys
 from pathlib import Path
 from typing import List, Tuple, Union, Iterable, Callable, Literal, Type, Any, Generator
 
-from .datatools import unique as unique_filter
-from .short import as_iter
-from .events import timed, Timer
-import logging
+from ..datatools import unique as unique_filter
+from ..events import Timer
+from ..short import as_iter
 
 PathT = Union[Path, str]
 UNDEF = object()
@@ -129,9 +129,14 @@ def compress_numpy_file(file, clean=True):
     :param clean: remove the sources
     """
     import numpy as np
-    from iad.io.imread import imread
     file = Path(file)
-    np.savez_compressed(file.with_suffix('.npz'), **imread(file, out=dict))
+    loaded = np.load(file, allow_pickle=True)
+    if isinstance(loaded, np.lib.npyio.NpzFile):
+        with loaded:
+            payload = {key: loaded[key] for key in loaded.files}
+    else:
+        payload = {file.stem: loaded}
+    np.savez_compressed(file.with_suffix('.npz'), **payload)
     if clean:
         os.remove(file)
 
@@ -810,7 +815,7 @@ def glob_folders(folders, file_pattern) -> Iterable[str]:
     :param file_pattern: glob pattern for path under the folder
     :return: Iterator over the files found
     """
-    from . import as_list
+    from .. import as_list
     from more_itertools import collapse
 
     return list(collapse(

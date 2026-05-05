@@ -14,7 +14,7 @@ def test_file_io(tmpdir: str):
     """Test file IO with temporary files (tmpdir is a pytest fixture)."""
 
     from pydantic.v1 import BaseModel
-    from iad.core.pydantools.fixed_pydantic_yaml import YamlModel, YamlModelMixin, YamlStrEnum
+    from iad.dataman.pydantools.fixed_pydantic_yaml import YamlModel, YamlModelMixin, YamlStrEnum
 
     class MyEnum(YamlStrEnum):
         a = "a"

@@ -4,11 +4,14 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "ialdev-io"
-version = "0.1.0"
+version = "0.2.0"
 description = "iad.io — image and structured file I/O (imread, formats, CIIF, inu helpers, etc.)"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
+authors = [
+    {name = "ipcoder"}
+]
 dependencies = [
     "ialdev-core",
     "numpy>=1.20.0",
@@ -21,6 +24,11 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=7.0.0"]
+
+[project.urls]
+Homepage = "https://github.com/ipcoder/ialdev/tree/master/fio"
+Repository = "https://github.com/ipcoder/ialdev"
+Issues = "https://github.com/ipcoder/ialdev/issues"
 
 [tool.flit.module]
 name = "iad.io"

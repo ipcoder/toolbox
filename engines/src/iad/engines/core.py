@@ -4,7 +4,7 @@ import abc
 import dataclasses
 from typing import Any, Collection, Iterable, Dict
 
-from iad.core.param import TBox
+from iad.core.tbox import TBox
 from iad.core import logger
 from iad.core.cache import PersistCache
 from iad.core.events import Timer

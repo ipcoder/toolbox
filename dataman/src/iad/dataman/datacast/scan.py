@@ -8,10 +8,10 @@ import pydantic.v1 as pydantic
 import regex as re
 from pydantic.v1 import PrivateAttr
 
-from iad.core.param import YamlModel
+from iad.dataman.pydantools import YamlModel
 from iad.core import logger
-from iad.core.filesproc import normalize
-from iad.core.paths import TransPath
+from iad.core.fs.filesproc import normalize
+from iad.core.fs.paths import TransPath
 
 _log = logger('datacast.scan')
 

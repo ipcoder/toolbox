@@ -1,4 +1,4 @@
-from iad.core.env import EnvLoc as CoreEnvLoc, Locator, env_log
+from iad.core.fs.env import EnvLoc as CoreEnvLoc, Locator, env_log
 
 
 class EnvLoc(CoreEnvLoc):

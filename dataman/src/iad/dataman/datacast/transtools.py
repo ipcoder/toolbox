@@ -7,9 +7,10 @@ from typing import Union, Callable, Iterable, Literal, Any, Collection, get_args
 import numpy as np
 import pandas as pd
 
-from iad.core import as_list, pdtools as pdt
+from iad.core import as_list
+import iad.core.data.pdtools as pdt
 from iad.core.fnctools import O, Namespace
-from iad.core.label import Labels
+from iad.core.data.label import Labels
 from iad.core.wrap import name_tuple
 
 EMPTY_CELL = (None, pd.NA, np.nan)

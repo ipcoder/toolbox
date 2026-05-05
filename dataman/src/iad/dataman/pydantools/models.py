@@ -9,9 +9,9 @@ from typing import Union, Type, Callable, List, Literal, Iterable
 import pydantic.v1 as pyd
 
 from iad.core import logger, as_list, as_iter
-from iad.core.param.tbox import TBox
+from iad.core.tbox import TBox
 from iad.io.format import FileFormat, CT, FormatHandler, MetaFormat
-from iad.core.pydantools.fixed_pydantic_yaml import YamlModelMixin
+from iad.dataman.pydantools.fixed_pydantic_yaml import YamlModelMixin
 
 PathT = Union[Path, str]
 

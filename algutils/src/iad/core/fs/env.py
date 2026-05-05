@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 import dotenv
 
-from iad.core.filesproc import Locator
+from .filesproc import Locator
 
 env_log = logging.getLogger('env')
 
@@ -172,7 +172,7 @@ class EnvLoc:
 
     @classmethod
     def _process_dotenv(cls, env_file, override=None):
-        from iad.core.filesproc import represents_path, normalize
+        from .filesproc import represents_path, normalize
 
         def same_value(v1, v2):
             """Return true if two values are the same.
@@ -234,10 +234,10 @@ class EnvLoc:
             if not Path(env_path).is_file():
                 if not fail: return None        
                 raise FileNotFoundError(f'Not found dotenv defined in {ENV_FILE_VAR}="{env_path}"')
-            env_log.debug(f'dotenv set by the environmnet variable {ENV_FILE_VAR}={env_path}')
+            env_log.debug(f'dotenv set by the environment variable {ENV_FILE_VAR}={env_path}')
         elif not (env_path := dotenv.find_dotenv(usecwd=True)):  # try first search from the current dir
             msg = f'Getting default .env after not found at CDW: {os.getcwd()}'
-            env_log.error(msg)
+            env_log.debug(msg)
             if not fail: return None
             raise FileNotFoundError(msg)
         return env_path

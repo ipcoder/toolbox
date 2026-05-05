@@ -8,11 +8,11 @@ from typing import (Collection, TypeAlias, Callable, Type, TYPE_CHECKING, Union,
 from pandas import DataFrame
 from pydantic.v1 import FilePath, DirectoryPath, BaseModel, Extra, root_validator, ValidationError
 
-from iad.core.pydantools.models import YamlModel, make_yml_model_format
+from iad.dataman.pydantools.models import YamlModel, make_yml_model_format
 
 from iad.core import logger, as_iter, drop_undef, as_list
 from iad.core.events import timed, time
-from iad.core.filesproc import PathT, Path, normalize, Locator, represents_path
+from iad.core.fs.filesproc import PathT, Path, normalize, Locator, represents_path
 from iad.core.wrap import CaseInsEnum, enum_attr
 
 if TYPE_CHECKING:
@@ -758,7 +758,7 @@ class ResManager(Generic[RT]):
         if not columns:
             return out
 
-        from iad.core.pdtools import DataTable
+        from iad.core.data.pdtools import DataTable
         df = DataTable(out, columns=[attr] if attr in ("name", "path", "res") else None)
         if isinstance(columns, list):
             df = df[columns]

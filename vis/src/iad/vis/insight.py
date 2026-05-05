@@ -203,7 +203,7 @@ def imhist(*imgs, titles=None, sharex=True, sharey=True, ax=None, grid=None,
 
     if measure:
         measure = as_list(measure)
-        from iad.core.nptools import stats
+        from iad.core.data.nptools import stats
 
     for i, (im, ax) in enumerate(zip(imgs, axs)):
         plt.sca(ax)

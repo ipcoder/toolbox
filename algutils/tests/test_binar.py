@@ -1,4 +1,4 @@
-from iad.core.binary import *
+from iad.core.data.binary import *
 
 
 def test_set_bits():

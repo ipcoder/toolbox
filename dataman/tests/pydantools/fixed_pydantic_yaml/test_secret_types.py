@@ -3,7 +3,7 @@
 import pytest
 from pydantic.v1 import SecretBytes, SecretStr
 
-from iad.core.pydantools.fixed_pydantic_yaml.model import YamlModel
+from iad.dataman.pydantools.fixed_pydantic_yaml.model import YamlModel
 
 
 class SecretTstModel(YamlModel):

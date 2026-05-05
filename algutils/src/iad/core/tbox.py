@@ -6,9 +6,9 @@ import pandas as pd
 import pydantic.v1 as pydantic
 from box import Box
 
-from ..datatools import complete_missing, UndefCond, UndefTypes
-from ..strings import compact_repr, hash_str
-from ..wrap import name_tuple
+from .datatools import complete_missing, UndefCond, UndefTypes
+from .strings import compact_repr, hash_str
+from .wrap import name_tuple
 
 __all__ = ['TBox', 'UndefCond']
 
@@ -151,7 +151,7 @@ class TBox(Box):
 
     def to_yaml(self, filename=None, *, default_flow_style=False,
                 encoding="utf-8", errors="strict", **yaml_kwargs):
-        from ..filesproc import prepare_parent_folder, Path
+        from .fs import prepare_parent_folder, Path
 
         par = self.copy()  # type: TBox
         for k, v in par.items(True):

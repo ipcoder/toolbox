@@ -5,7 +5,7 @@ from typing import Any, Callable, Literal, Sequence
 
 import regex as re
 
-from .regexp import format_to_regex, regex_to_format, is_regex, partition
+from ..regexp import format_to_regex, regex_to_format, is_regex, partition
 
 
 def ng(name=None, exp=None, /, **kw):
@@ -329,7 +329,7 @@ class Form:
 
     def _repr_parts_tree(self, indent=' ' * 4, head='Form:\n'):
         """String representing parsed tree of parts"""
-        from .strings import indent_lines
+        from ..strings import indent_lines
 
         return head + '\n'.join(indent_lines(
             p._repr_parts_tree(indent=indent, head=head) if isinstance(p, Form) else p
@@ -516,7 +516,7 @@ class TransPath:
         if no_tag and not self.has_unnamed:
             raise ValueError("Unnamed tag is not defined but requested!")
         if no_tag is True:
-            from .datatools import split_dict
+            from ..datatools import split_dict
             labels, no_tag = split_dict(labels, lambda k, v: k in self.expected_tags)
             no_tag = no_tag or None
         if no_tag:

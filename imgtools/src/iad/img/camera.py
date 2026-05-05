@@ -7,11 +7,11 @@ from warnings import warn
 
 import numpy as np
 
-from iad.core.param import TBox
+from iad.core.tbox import TBox
 from iad.maths.geom import Vec2d, Pose
 
 if TYPE_CHECKING:
-    from iad.core.units import Quantity
+    from iad.core.data.units import Quantity
 
 
 class Resolution(Enum):
@@ -226,7 +226,7 @@ class StereoCam(TBox):
             angle: view angle - used to calculate focal only if its not provided - ignored otherwise
             units: str or pint-units object describing baseline units
         """
-        from iad.core.units import assign_units
+        from iad.core.data.units import assign_units
         # process special initialization cases
         if obj is not None:
             super().__init__(self._convert_xy(obj), **kwargs)
@@ -292,7 +292,7 @@ class StereoCam(TBox):
         :param kw_box: yaml, box keyword arguments
         :return: str if filename=None or None
         """
-        from iad.core.units import un
+        from iad.core.data.units import un
         d = self.to_dict()
         if isinstance(d['baseline'], un.Quantity):
             d['baseline'] = d['baseline'].to_tuple()
@@ -309,7 +309,7 @@ class StereoCam(TBox):
 
     @classmethod
     def from_yaml(cls, yaml_string=None, filename=None, **kwargs):
-        from iad.core.units import un
+        from iad.core.data.units import un
         d = TBox.from_yaml(yaml_string=yaml_string, filename=filename, **kwargs)
         if isinstance(d['baseline'], str):
             d['baseline'] = un(d['baseline'])

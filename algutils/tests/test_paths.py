@@ -22,7 +22,7 @@ pat = r"""
 
 @pytest.fixture(scope='module')
 def trans_path():
-    from iad.core.paths import TransPath
+    from iad.core.fs.paths import TransPath
     tp = TransPath(pat)
     print(tp.regex.regex.pattern)
     return tp

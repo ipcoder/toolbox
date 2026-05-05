@@ -19,7 +19,7 @@ _cfg_sfx = [['.yaml', '.yml'], ['.json', '.jso', '.js', '.jsn'], ['.toml', '.tml
 
 class ConfigFormat(FileFormat, desc="Nested Textual Configuration",
                    content=CT.META | CT.CONFIG, patterns=[*chain(*_cfg_sfx)]):
-    from iad.core.param import TBox
+    from iad.core.tbox import TBox
     _aliases = {sfx: grp[0].strip('.') for grp in _cfg_sfx for sfx in grp}
 
     @classmethod

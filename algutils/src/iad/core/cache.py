@@ -12,7 +12,7 @@ from tqdm import tqdm
 from . import logs
 from . import logger
 from .events import Timer
-from .filesproc import Locator
+from .fs import Locator
 from .strings import hash_str
 
 _log = logger('caching')

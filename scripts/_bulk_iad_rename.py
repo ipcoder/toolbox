@@ -23,7 +23,7 @@ SKIP_DIRS = {
 
 IMPORT_SUBST = [
     # (old_root, new_root) — apply longest roots first where needed
-    ("pydantools", "iad.core.pydantools"),
+    ("pydantools", "iad.dataman.pydantools"),
     ("algutils", "iad.core"),
     ("iotools", "iad.io"),
     ("imgtools", "iad.img"),

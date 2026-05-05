@@ -19,10 +19,10 @@ import pandas as pd
 from IPython import display as ipy_disp
 from pandas.core.dtypes.common import is_list_like
 
-from . import strings as stt, codetools as cdt, nptools as npt
-from . import wrap
-from .datatools import select_from, issubset_report
-from .short import as_list, unless_subset
+from .. import strings as stt, codetools as cdt, wrap
+from . import nptools as npt
+from ..datatools import select_from, issubset_report
+from ..short import as_list, unless_subset
 
 # https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
 # Copy-on-Write will become the new default in pandas 3.0. This means than chained indexing will never work.
@@ -185,7 +185,7 @@ class Parallel:
         :return: resulted table (same class as df)
         """
         import joblib as jb
-        from .events import tqdm_joblib
+        from ..events import tqdm_joblib
 
         par = self.jobs if isinstance(self.jobs, dict) else dict(
             backend='loky',
@@ -2004,7 +2004,7 @@ def path_fixer(root, fixer_name, cols='path') -> Callable[[pd.DataFrame], pd.Dat
 
     cols = set(as_list(cols))
 
-    from . import filesproc as proc
+    from ..fs import filesproc as proc
     fixer = {
         'add': proc.root_adder,
         'crop': proc.root_cropper

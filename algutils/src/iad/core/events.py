@@ -605,7 +605,7 @@ class Dump(dict):
             self.configure()
 
     def configure(self, new_config=None):
-        from .paths import TransPath
+        from .fs.paths import TransPath
         # TODO add
         #  1) support to selective config along the tree
         #  2) clearer way to configure
@@ -620,7 +620,6 @@ class Dump(dict):
 
     def __call__(self, data=None, labels: dict = None, **kwargs):
         import os
-        from iad.io import imsave
 
         if not self.active or data is None:
             return self.labels
@@ -640,8 +639,10 @@ class Dump(dict):
         if os.path.isfile(path) and not self.config.exist_ok:
             raise FileExistsError(f"File {path} already exists")
         path.parent.mkdir(mode=0o777, parents=True, exist_ok=True)
-        # TODO add support for other file types
-        imsave(path, data)
+        writer = getattr(self.config, 'writer', None)
+        if writer is None:
+            raise RuntimeError("Dump requires config.writer callable to save data")
+        writer(path, data)
 
     def fork(self, other: dict):
         return Dump(config=self.config, root=self.root, labels=other | self.labels, scheme=self.scheme)

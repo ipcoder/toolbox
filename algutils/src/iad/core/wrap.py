@@ -150,7 +150,7 @@ class NamedTupleI:
     ::
             isinstance(type(obj), NamedTupleMeta)
     """
-    from .nptools import array_info_str
+    from .data.nptools import array_info_str
 
     _fields: list[str]
     __iter__: Callable

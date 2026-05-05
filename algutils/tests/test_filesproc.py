@@ -1,6 +1,6 @@
 import pytest
 
-from iad.core.filesproc import Locator, Path
+from iad.core.fs.filesproc import Locator, Path
 
 
 def test_locator(tmp_path):

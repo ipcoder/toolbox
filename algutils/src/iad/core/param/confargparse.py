@@ -35,7 +35,7 @@ class ArgumentParserYAML(cap.ArgumentParser):
 
         :return: dict {grp_name: hash_str}
         """
-        from .tbox import TBox
+        from ..tbox import TBox
         groups = self.hash_groups or {'cfg': [*vars(ns)]}
         ns = vars(ns)
 

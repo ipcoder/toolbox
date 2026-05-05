@@ -4,7 +4,7 @@ from pygraphviz import AGraph
 
 
 class IGraph(AGraph):
-    """ See ./tests/test_dotsyle.py for examples """
+    """See ``vis/tests/test_dotstyle.py`` for examples."""
 
     def __init__(self, thing=None, filename=None, data=None,
                  string=None, handle=None, name='', strict=True,
@@ -53,8 +53,8 @@ class IGraph(AGraph):
 
 class DotStyle(dict):
     """
-    Provides "styles" arithmetic for dot format
-    See ./tests/test_dotsyle.py for examples
+    Provides "styles" arithmetic for dot format.
+    See ``vis/tests/test_dotstyle.py`` for examples.
     """
     def __init__(self, val=None, **kw):
         """

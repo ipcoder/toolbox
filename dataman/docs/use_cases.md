@@ -12,7 +12,7 @@ Resource types implemented as subclasses of pydantic model ``ResourseModel``
 
 ```python
 from iad.dataman.resman import ResourceModel, locatable
-from iad.core.env import EnvLoc
+from iad.core.fs.env import EnvLoc
 
 
 @locatable(EnvLoc.RESOURCES / 'houses')

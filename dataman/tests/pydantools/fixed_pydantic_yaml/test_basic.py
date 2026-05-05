@@ -8,8 +8,8 @@ def test_readme():
 def test_simple():
     """Tests the functionality from the README."""
 
-    from iad.core.pydantools.fixed_pydantic_yaml import YamlStrEnum
-    from iad.core.pydantools.fixed_pydantic_yaml.model import YamlModel
+    from iad.dataman.pydantools.fixed_pydantic_yaml import YamlStrEnum
+    from iad.dataman.pydantools.fixed_pydantic_yaml.model import YamlModel
 
     class MyEnum(YamlStrEnum):
         a = "a"
@@ -44,7 +44,7 @@ def test_nested_models():
     """Test nested YAML models and inheritance."""
 
     from pydantic.v1 import BaseModel
-    from iad.core.pydantools.fixed_pydantic_yaml.model import YamlModel, YamlModelMixin
+    from iad.dataman.pydantools.fixed_pydantic_yaml.model import YamlModel, YamlModelMixin
 
     class A0(BaseModel):
         x: int = 1

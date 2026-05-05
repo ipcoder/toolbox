@@ -1,5 +1,5 @@
-from iad.core.array import *
-from iad.core.array import _wC2G
+from iad.core.data.array import *
+from iad.core.data.array import _wC2G
 import pytest
 import numpy as np
 

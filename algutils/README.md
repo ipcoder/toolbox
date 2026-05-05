@@ -1,29 +1,48 @@
-# algutils
+# ialdev-core
 
-Algorithmic utilities: data tools, I/O, parameters, paths, caching, image transforms, and math (hist, geom, regress).
+Core utilities for the `iad` toolbox, published as `ialdev-core` and imported as `iad.core`.
 
-Extracted from the toolbox project as a standalone, installable package.
+Use this package when you need the shared building blocks used by the other `ialdev-*` libraries: collection helpers, typed dictionaries, path transformations, file discovery, caching, logging, event timing, decorators, and NumPy/Pandas utility functions.
 
-## Installation
+## Install
 
 ```bash
-# From this directory (editable)
-pip install -e .
-
-# With optional extras
-pip install -e ".[io,units,dev]"
+pip install ialdev-core
 ```
 
-## Usage
+Requires Python `>=3.10`, NumPy `>=2.0`, and pandas `>=2.1.0`.
+
+## Highlights
+
+- `iad.core.short`: scalar/list normalization and keyword filtering (`as_list`, `as_iter`, `drop_undef`).
+- `iad.core.tbox`: `TBox`, a convenience wrapper around `python-box`.
+- `iad.core.fs`: path normalization, file discovery, locators, and transformable path templates.
+- `iad.core.cache`: pickle-based caches and cached processing pipes.
+- `iad.core.data`: NumPy/Pandas helpers, labels, units, binary packing, and table utilities.
+- `iad.core.events`: timers, progress helpers, and joblib/tqdm integration.
+
+## Examples
 
 ```python
-from algutils import logger, as_list
-from algutils.param import TBox, YamlModel
-from algutils.io.format import FileFormat
-from algutils.io.imread import imread
+from iad.core import as_list, drop_undef
+from iad.core.tbox import TBox
+
+names = as_list("sample")
+config = TBox(drop_undef(root="/data", cache=None, batch=8))
+```
+
+```python
+from iad.core.fs.filesproc import Locator
+from iad.core.fs.paths import TransPath
+
+locator = Locator("/data/project")
+path_template = TransPath("{scene}/{frame}.png")
 ```
 
 ## Development
 
-- **pixi**: `pixi install` then `pixi run test` or `pixi run lint`
-- **pip**: `pip install -e ".[dev]"` then `pytest src/algutils -v`
+```bash
+pip install -e .
+pixi run test
+pixi run lint
+```

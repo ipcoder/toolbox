@@ -3,7 +3,7 @@ from typing import Union, Optional
 import numpy as np
 import toolz as tz
 
-from iad.core import nptools as npt
+from iad.core.data import nptools as npt
 
 
 class Regions(dict):

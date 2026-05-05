@@ -11,7 +11,7 @@ from matplotlib.backend_bases import MouseButton
 from matplotlib.pyplot import Axes
 from matplotlib.widgets import PolygonSelector
 from iad.dataman.datacast import DataCollection
-from iad.core.label import Labels
+from iad.core.data.label import Labels
 from iad.vis.interact import LinesDrawer
 from iad.vis.insight import KeyProcessor
 from .collect import IssueCollection

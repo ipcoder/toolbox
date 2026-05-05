@@ -41,7 +41,7 @@ def pack_bit_arrays_64(arrays):
     :param arrays:
     :return: bit-packed array
     """
-    from iad.core.binary import align_type_bits
+    from iad.core.data.binary import align_type_bits
     n = len(arrays)
     shapes = [a.shape for a in arrays]
     shape = shapes[0]

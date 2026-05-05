@@ -1,6 +1,6 @@
 import numpy as np
 
-from iad.core.nptools import *
+from iad.core.data.nptools import *
 
 
 def test_xy2idx():

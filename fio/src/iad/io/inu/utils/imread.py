@@ -70,7 +70,7 @@ def tiff_inu_cam(file_name: str):
     """
     from PIL import Image, TiffImagePlugin
     import numbers
-    from iad.core.param import TBox
+    from iad.core.tbox import TBox
     from iad.img.camera import StereoCam
 
     stack_x_tag = 5005  # 1 or 2: number of images per line
@@ -122,7 +122,7 @@ def imread_stereo(file, cam_info=None, source=False) -> namedtuple:
     """
     from re import sub
     import os
-    from iad.core.param import TBox
+    from iad.core.tbox import TBox
 
     filename = os.path.split(file)[-1]
     if filename.startswith('Video_') or filename.startswith('StereoImage_'):
@@ -182,7 +182,7 @@ def imread_fly3d(fid, scid=0, group='A', *, disp=False, test=True,
             0.0	        0.0	        1.0
         where (fx,fy) are focal lengths and (cx,cy) denotes the principal point."
     """
-    from iad.core.param import TBox
+    from iad.core.tbox import TBox
     from iad.img.camera import StereoCam
     import os
 
@@ -244,7 +244,7 @@ def save_depth_nu4(file, depth, *, units='mm/100', inv=0):
     if hasattr(depth, 'magnitude'):
         Q = type(depth)
     else:
-        from iad.core.units import Quantity
+        from iad.core.data.units import Quantity
         Q = Quantity
         depth = Q(depth, 'mm')
 

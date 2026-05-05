@@ -15,8 +15,8 @@ def multi_label_data_table():
 
     """
     import numpy as np
-    from iad.core.pdtools import DataTable, pd
-    from iad.core.label import Keys
+    from iad.core.data.pdtools import DataTable, pd
+    from iad.core.data.label import Keys
 
     shape = (10, 10)
     imL, imR = (np.ones(shape) * 1, np.ones(shape) * 2)

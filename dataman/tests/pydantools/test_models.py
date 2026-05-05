@@ -2,9 +2,9 @@ import pytest
 import pydantic.v1 as pydantic
 from pydantic.v1 import BaseModel
 
-from iad.io.format import *
-from iad.core.pydantools.models import YamlModel
-
+# from iad.io.format import *
+from iad.dataman.pydantools.models import YamlModel
+from pathlib import Path
 
 def test_yaml_hash_exclude():
 

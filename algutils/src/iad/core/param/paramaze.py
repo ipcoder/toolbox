@@ -4,7 +4,7 @@ from enum import IntEnum, unique
 from typing import Union, Callable, Optional, Dict, Sequence
 
 from .. import as_list, fnctools as fnt, wrap
-from .tbox import TBox
+from ..tbox import TBox
 
 Rule = Union[Callable, str, None]
 

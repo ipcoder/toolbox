@@ -48,7 +48,7 @@ class LabelRules:
     @staticmethod
     def load_domains(path=None):
         """Load domains conventions"""
-        from iad.core.param import TBox
+        from iad.core.tbox import TBox
         from iad.dataman.env import EnvLoc
         # Consider: is that the right approach ? What if RES_LOC missing and path is None?
         path = path or (EnvLoc.RESOURCES / 'schemes').first_file('labels.yml')

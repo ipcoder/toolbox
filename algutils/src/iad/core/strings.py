@@ -201,8 +201,8 @@ def compact_repr(v, max_len=60) -> str:
     :param max_len: maximal length of the resulting string
     :return: str
     """
-    from .units import Quantity
-    from .nptools import array_info_str, np
+    from .data.units import Quantity
+    from .data.nptools import array_info_str, np
     import pandas as pd
 
     def crop(s, mx):

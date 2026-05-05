@@ -4,11 +4,14 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "ialdev-maths"
-version = "0.1.0"
+version = "0.2.0"
 description = "iad.maths — histograms, geometry, regression"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
+authors = [
+    {name = "ipcoder"}
+]
 dependencies = [
     "ialdev-core",
     "numpy>=1.20.0",
@@ -22,6 +25,11 @@ dev = [
     "pytest>=7.0.0",
     "ialdev-vis",
 ]
+
+[project.urls]
+Homepage = "https://github.com/ipcoder/ialdev/tree/master/maths"
+Repository = "https://github.com/ipcoder/ialdev"
+Issues = "https://github.com/ipcoder/ialdev/issues"
 
 [tool.flit.module]
 name = "iad.maths"

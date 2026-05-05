@@ -5,11 +5,11 @@ from pathlib import Path
 from typing import Literal, get_args, Collection, Iterable
 
 from .core import AlgoEngine
-from iad.core.env import EnvLoc as CoreEnvLoc, Locator
-from iad.core.pydantools.models import YamlModel, pyd
+from iad.core.fs.env import EnvLoc as CoreEnvLoc, Locator
+from iad.dataman.pydantools.models import YamlModel, pyd
 from iad.dataman.resman import ResourceModel, locatable
 from iad.core import drop_undef
-from iad.core.filesproc import PyModuleLocator
+from iad.core.fs.filesproc import PyModuleLocator
 from iad.core.logs import getLogger, error
 
 _log = getLogger('engines')
@@ -120,7 +120,7 @@ class EnginesCatalogRM(ResourceModel):
                 if (eng := valid_info(name, info))}
 
     def to_table(self):
-        from iad.core.pdtools import DataTable
+        from iad.core.data.pdtools import DataTable
         return DataTable(dict(v) for k, v in self.engines.items())
 
 
@@ -355,7 +355,7 @@ class Registry:
         :return:
         """
         import shutil
-        from iad.core.param import TBox
+        from iad.core.tbox import TBox
         # ---------- if its a package provided, convert into path first ---------------
         if package:  # may be it's a dotted package name
             assert not path, "Use either folder or module!"

@@ -40,7 +40,7 @@ def _add_levels_attrs(obj: T) -> T:
 
 def module_log_file(file: str | Path):
     """Constructs default log file name from module file"""
-    from .filesproc import Locator
+    from .fs import Locator
     out_folder = Locator('/tmp/ramdisk', '/tmp', envar='TEMP').first_existing()
     if not out_folder:
         from tempfile import mkdtemp

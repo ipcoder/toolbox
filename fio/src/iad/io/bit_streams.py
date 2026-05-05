@@ -11,7 +11,7 @@ def save_bit_streams(full_file_name, streams, order=None):
     :return: ---
     """
     import tifffile, json
-    from iad.core.binary import join_bits
+    from iad.core.data.binary import join_bits
     streams = streams.copy()
 
     def extract_bits_data(names):
@@ -48,7 +48,7 @@ def load_bit_streams(full_file_name):
                             the file is assumed to contain YML metadata recorded by save_bit_streams()
     :return: split data streams
     """
-    from iad.core.binary import split_bits
+    from iad.core.data.binary import split_bits
     from imread import imread
     tiff_im, streams = imread(full_file_name, get_meta=True)
 

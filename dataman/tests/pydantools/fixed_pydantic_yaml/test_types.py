@@ -2,13 +2,13 @@
 
 import pytest
 
-from iad.core.pydantools.fixed_pydantic_yaml.compat.types import (
+from iad.dataman.pydantools.fixed_pydantic_yaml.compat.types import (
     YamlInt,
     YamlIntEnum,
     YamlStr,
     YamlStrEnum,
 )
-from iad.core.pydantools.fixed_pydantic_yaml.compat.yaml_lib import yaml_safe_dump, yaml_safe_load
+from iad.dataman.pydantools.fixed_pydantic_yaml.compat.yaml_lib import yaml_safe_dump, yaml_safe_load
 
 
 class XSE(YamlStrEnum):

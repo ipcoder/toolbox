@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 
 from .env import EnvLoc
-from iad.core.pdtools import DataTable
+from iad.core.data.pdtools import DataTable
 from pathlib import Path
 
 __all__ = ['IssueCollection']

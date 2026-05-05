@@ -3,8 +3,8 @@ from pathlib import Path
 import pytest
 from pydantic.v1 import ValidationError
 
-from iad.core.pydantools.fixed_pydantic_yaml.ext.semver import SemVer
-from iad.core.pydantools.fixed_pydantic_yaml.ext.versioned_model import VersionedYamlModel
+from iad.dataman.pydantools.fixed_pydantic_yaml.ext.semver import SemVer
+from iad.dataman.pydantools.fixed_pydantic_yaml.ext.versioned_model import VersionedYamlModel
 
 
 def test_versioned_yaml():

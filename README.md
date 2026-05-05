@@ -1,69 +1,69 @@
-# ialgdev (monorepo meta-package)
+# ialgdev
 
-The repository root installs **`ialgdev`**, a **dependency-only** meta-package: it has no `iad.*` code, only **`[project.dependencies]`** on the **`ialdev-*`** wheels. You do **not** need setuptools in particular—any **PEP 517** backend that can ship an empty wheel is fine. This repo uses **setuptools** for that; **Flit** is kept for the real libraries (one `[tool.flit.module]` each) and is a poor fit for a module-less meta wheel.
+`ialgdev` is a dependency-only meta package for the `ialdev-*` Python packages in this repository. Install it when you want the full toolbox; install an individual `ialdev-*` package when you only need one namespace.
 
-## Installation
+## Install
 
-### From source (with pixi workspace)
+```bash
+pip install ialgdev
+```
+
+From a checkout:
 
 ```bash
 git clone https://github.com/yourusername/toolbox.git
 cd toolbox
 pixi install
-```
-
-### Editable pip install (all `ialdev-*` libraries)
-
-```bash
 pip install -e ./algutils -e ./fio -e ./imgtools -e ./maths -e ./vis -e ./dataman -e ./annotations -e ./engines -e .
 ```
 
-The I/O project lives under **`fio/`** (not `io/`) so the directory name does not shadow the standard library `io` module.
+Requires Python `>=3.10`.
 
-### Development installation
+## Packages
 
-```bash
-pip install -e ".[dev]"
-```
+| PyPI package | Import namespace | Purpose |
+|---|---|---|
+| `ialdev-core` | `iad.core` | Shared utilities for collections, config, paths, caching, logging, events, and typed helpers. |
+| `ialdev-io` | `iad.io` | Image, metadata, PFM, PLY, CIIF, TIFF, ZFP, bit-stream, and Inuitive/NU4 I/O helpers. |
+| `ialdev-img` | `iad.img` | Image transforms, crops, regions, camera models, stereo camera metadata, and binning helpers. |
+| `ialdev-maths` | `iad.maths` | Histograms, samplers, 2D geometry, planes, and regression utilities. |
+| `ialdev-vis` | `iad.vis` | Matplotlib/Jupyter visualization helpers, image grids, histograms, colormaps, and optional 3D viewers. |
+| `ialdev-dataman` | `iad.dataman` | Dataset resource models, data casting, collections, sinks, and YAML/Pydantic tooling. |
+| `ialdev-annotations` | `iad.annotations` | Issue/ROI tables, CSV loading, and annotation visualization on scenes. |
+| `ialdev-engines` | `iad.engines` | Algorithm engine base classes, labeled I/O types, registries, and catalogs. |
 
-## Package Architecture
+The source directory for `ialdev-io` is named `fio/` to avoid shadowing Python's standard library `io` module during development.
 
-PyPI distribution names and import namespaces:
-
-| Folder        | `pip install`     | `import`        |
-|---------------|-------------------|-----------------|
-| `algutils/`   | `ialdev-core`     | `iad.core`      |
-| `fio/`        | `ialdev-io`       | `iad.io`        |
-| `imgtools/`   | `ialdev-img`      | `iad.img`       |
-| `maths/`      | `ialdev-maths`    | `iad.maths`     |
-| `vis/`        | `ialdev-vis`      | `iad.vis`       |
-| `dataman/`    | `ialdev-dataman`  | `iad.dataman`   |
-| `annotations/`| `ialdev-annotations` | `iad.annotations` |
-| `engines/`    | `ialdev-engines`  | `iad.engines`   |
-
-## Publishing to PyPI (Flit)
-
-The `ialdev-*` packages are built with **[Flit](https://flit.pypa.io/)** (`flit_core` backend in each `pyproject.toml`). From the repo root with Pixi:
-
-```bash
-pixi install   # provides ``flit`` and ``build`` CLI
-cd algutils && pixi run flit build --no-use-vcs && pixi run flit publish
-```
-
-Repeat `build` / `publish` in `fio/`, `imgtools/`, `maths/`, `vis/`, `dataman/`, `annotations/`, `engines/` as needed. Use `--no-use-vcs` if the working tree is not clean (Flit otherwise checks version control for sdist contents).
-
-Configure PyPI credentials with **keyring**, `~/.pypirc`, or `FLIT_USERNAME` / `FLIT_PASSWORD` / tokens per Flit docs.
-
-The **`ialgdev`** meta-package at the repository root uses **setuptools**; publish it separately only if you distribute that name (e.g. `python -m build` at repo root).
-
-## Usage
+## Quick examples
 
 ```python
-from iad.core.param import YamlModel, TBox
-from iad.dataman.datacast import DataCollection, SinkRepo
-# See each package’s docs for full APIs.
+from iad.core import as_list, drop_undef
+from iad.core.tbox import TBox
+
+items = as_list("scene_001")
+config = TBox(drop_undef(root="/data", cache=None))
 ```
 
-## License
+```python
+from iad.io import imread, imsave
+from iad.img.tools import center_crop
+from iad.vis import imgrid
 
-[Your License Here]
+image = imread("frame.tif")
+crop = center_crop(image, width=256, height=256)
+imgrid(image, crop, titles=["source", "crop"])
+imsave("crop.tif", crop)
+```
+
+## Development and publishing
+
+The individual `ialdev-*` packages use [Flit](https://flit.pypa.io/) and define one `[tool.flit.module]` each. The root `ialgdev` meta package uses `setuptools` and contains no `iad.*` modules.
+
+```bash
+pixi install
+cd algutils
+pixi run flit build --no-use-vcs
+pixi run flit publish
+```
+
+Repeat the build/publish commands in each package directory as needed.

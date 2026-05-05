@@ -32,7 +32,7 @@ def middlebury_calib(source: Union[str, 'Path']):
     :return: StereoCam TBox object with calibration parameters
     """
     from iad.img.camera import StereoCam
-    from iad.core.param import TBox
+    from iad.core.tbox import TBox
 
     source = Path(source) if isinstance(source, str) else source
     c = TBox.from_yaml(source.read_text('utf-8').replace('=', ': '))

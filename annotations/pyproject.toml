@@ -4,11 +4,14 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "ialdev-annotations"
-version = "0.1.0"
+version = "0.2.0"
 description = "iad.annotations — issue collections and annotation tooling"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
+authors = [
+    {name = "ipcoder"}
+]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -34,6 +37,11 @@ dependencies = [
 dev = [
     "pytest>=7.0.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/ipcoder/ialdev/tree/master/annotations"
+Repository = "https://github.com/ipcoder/ialdev"
+Issues = "https://github.com/ipcoder/ialdev/issues"
 
 [tool.flit.module]
 name = "iad.annotations"

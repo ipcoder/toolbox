@@ -1,4 +1,4 @@
-from iad.core.env import EnvLoc as CoreEnvLoc, Locator
+from iad.core.fs.env import EnvLoc as CoreEnvLoc, Locator
 
 class EnvLoc(CoreEnvLoc):
     """Environment locators for annotations package."""

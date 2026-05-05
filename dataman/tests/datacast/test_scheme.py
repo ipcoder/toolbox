@@ -4,9 +4,9 @@ from pathlib import Path
 import pytest
 
 from iad.dataman.datacast.caster import PickleRelativePath
-from iad.core.param import TBox
+from iad.core.tbox import TBox
 from iad.core.cache import Pickle, CacheInvalidError, CachedPipe, CacheMode
-from iad.core.paths import TransPath
+from iad.core.fs.paths import TransPath
 
 
 def test_labels_extraction(tiny_stereo):

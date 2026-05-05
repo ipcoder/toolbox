@@ -3,7 +3,7 @@ from copy import copy
 import box
 import pytest
 
-from iad.core.param import TBox
+from iad.core.tbox import TBox
 
 
 def test_construct():

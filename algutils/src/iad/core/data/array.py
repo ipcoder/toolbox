@@ -11,10 +11,10 @@ import numpy as np
 import numba
 from numbers import Number
 
-from .codetools import NamedObj
-from . import as_list
+from ..codetools import NamedObj
+from .. import as_list
 from . import nptools as npt
-from .datatools import rm_keys
+from ..datatools import rm_keys
 
 __all__ = ['DForm', 'Array', 'FormArray', 'form_array', 'Color', '_wC2G']
 

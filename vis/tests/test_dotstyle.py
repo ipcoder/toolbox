@@ -3,7 +3,9 @@ import tempfile
 
 import pytest
 
-from iad.core.dotstyle import *
+pytest.importorskip("pygraphviz")
+
+from iad.vis.dotstyle import *
 
 dot_available = pytest.mark.skipif(
     shutil.which("dot") is None, reason="graphviz 'dot' binary not in PATH"
@@ -165,7 +167,7 @@ def test_alexnet():
         pool2;
         pool5;
 
-        node [norm];  // Normalization nodes
+        node [norm];     // Normalization nodes
         norm1;
         norm2;
 

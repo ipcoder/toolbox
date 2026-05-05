@@ -7,9 +7,9 @@ from typing import Dict, Sequence, Any, Collection, NamedTuple, Iterable
 
 import pandas as pd
 
-from . import as_list
+from .. import as_list
 from .nptools import Array
-from .strings import compact_repr
+from ..strings import compact_repr
 
 
 class Keys(pd.core.indexes.frozen.FrozenList):  # TODO: Merge Keys into Labeled?

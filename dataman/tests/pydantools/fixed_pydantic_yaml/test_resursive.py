@@ -5,7 +5,7 @@ from typing import Optional
 
 import pytest
 
-from iad.core.pydantools.fixed_pydantic_yaml.model import YamlModel
+from iad.dataman.pydantools.fixed_pydantic_yaml.model import YamlModel
 
 
 class A(YamlModel):

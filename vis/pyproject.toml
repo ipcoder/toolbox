@@ -4,11 +4,14 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "ialdev-vis"
-version = "0.1.0"
+version = "0.2.0"
 description = "iad.vis — visualization utilities (image grids, viewers, colormaps, matplotlib helpers)"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
+authors = [
+    {name = "ipcoder"}
+]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -28,6 +31,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+graphviz = [
+    "pygraphviz>=1.14,<2",
+]
 qt = [
     "PyQt5>=5.15.0",
     "scikit-image>=0.19.0",
@@ -45,8 +51,13 @@ dev = [
     "pytest-cov>=3.0.0",
 ]
 all = [
-    "ialdev-vis[qt,jupyter,3d,dev]",
+    "ialdev-vis[graphviz,qt,jupyter,3d,dev]",
 ]
+
+[project.urls]
+Homepage = "https://github.com/ipcoder/ialdev/tree/master/vis"
+Repository = "https://github.com/ipcoder/ialdev"
+Issues = "https://github.com/ipcoder/ialdev/issues"
 
 [tool.flit.module]
 name = "iad.vis"
