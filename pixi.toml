@@ -32,3 +32,5 @@ test-all = "MPLBACKEND=Agg python -m pytest -c pytest.ini"
 test-packages = "MPLBACKEND=Agg python -m pytest -c pytest.ini algutils/tests maths/tests fio/tests imgtools/tests"
 test-integration = "MPLBACKEND=Agg python -m pytest -c pytest.ini dataman/tests vis/tests"
 test-ialgdev-extras = "MPLBACKEND=Agg python -m pytest -c pytest.ini annotations/tests"
+
+publish-pypi = "./publish_pypi"

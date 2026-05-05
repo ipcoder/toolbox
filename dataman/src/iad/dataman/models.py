@@ -230,7 +230,7 @@ class Selection:
         if isinstance(v, str):
             if re.fullmatch(r'\d+(\.\d*)?%', v):
                 v = float(v[:-1]) / 100
-            elif re.fullmatch('\([\w, +-]+\)', v):
+            elif re.fullmatch(r'\([\w, +-]+\)', v):
                 v = eval('slice' + v)
             else:
                 ValueError(f'Invalid sample selection value: "{v}"')

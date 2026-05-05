@@ -4,7 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "ialdev-core"
-version = "0.2.0"
+version = "0.2.1"
 description = "iad.core — algorithmic utilities: data tools, parameters, paths, caching, and more"
 readme = "README.md"
 requires-python = ">=3.10"

@@ -67,11 +67,11 @@ def short_form(s: str, head=0, tail=0):
 
 
 def smart_warp(s, width=80, **splitters):
-    """
+    r"""
     Warp string py applying `splitters` in order to limit each line by requested `width`.
 
     Every splitter must be a regular expression to use by `re.split(splitter, line, maxsplit=1)`
-    If splitters not provided, defaults are used:
+    If splitters are not provided, defaults are used:
     ::
 
         splitters = dict(
