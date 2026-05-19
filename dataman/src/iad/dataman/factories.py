@@ -6,9 +6,6 @@ built into DataCaster and DataCollection.
 """
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Iterable, Union
-
 from iad.core import as_list, as_iter
 
 
@@ -75,7 +72,7 @@ def create_collection(name_or_datasets=None, *,
 
     :returns: a fully-constructed DataCollection
     """
-    from .models import DatasetRM, CollectionRM
+    from .models import CollectionRM
     from .datacast.collect import DataCollection
     from iad.core import drop_undef
 

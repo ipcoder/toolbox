@@ -1198,11 +1198,11 @@ class StatGather2D:
             case 'range':
                 slc = np.s_[self.samplers[0].below:-2, self.samplers[1].below:-2]
                 if self.hist.ndim == 3:
-                    slc = np.s_[:, *slc]
+                    slc = (slice(None),) + slc
             case 'nonan':
                 slc = np.s_[self.samplers[0].below:-1, self.samplers[1].below:-1]
                 if self.hist.ndim == 3:
-                    slc = np.s_[:, *slc]
+                    slc = (slice(None),) + slc
             case None | False:
                 pass
             case _:

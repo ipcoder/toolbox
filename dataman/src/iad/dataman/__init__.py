@@ -4,7 +4,7 @@ from .models import DataSourceRM, SchemeRM, DatasetRM, CollectionRM, DSample, di
 from .factories import create_caster, create_collection, create_sink
 from .datacast.collect import DataCollection, SinkRepo
 
-__version__ = "0.2.0"
+__version__ = "0.2.2"
 
 __all__ = [
     "__version__",

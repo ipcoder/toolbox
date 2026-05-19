@@ -4,7 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "ialdev-core"
-version = "0.2.1"
+version = "0.2.2"
 description = "iad.core — algorithmic utilities: data tools, parameters, paths, caching, and more"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -48,6 +48,9 @@ dependencies = [
     "scikit-learn>=1.0.0",
     "python-dotenv>=0.19.0",
 ]
+
+[project.optional-dependencies]
+ipython = ["ipython>=7.0.0"]
 
 [project.urls]
 Homepage = "https://github.com/ipcoder/ialdev/tree/master/algutils"

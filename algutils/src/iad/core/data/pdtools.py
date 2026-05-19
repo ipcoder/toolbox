@@ -16,7 +16,6 @@ if TYPE_CHECKING:
 
 import numpy as np
 import pandas as pd
-from IPython import display as ipy_disp
 from pandas.core.dtypes.common import is_list_like
 
 from .. import strings as stt, codetools as cdt, wrap
@@ -44,6 +43,16 @@ AxisT = Union[AxisID, Collection[AxisID]]
 
 _ALL = slice(None)
 NA = cdt.NamedObj('NA')
+
+
+def _ipython_display(*args, **kwargs):
+    from IPython import display
+    return display.display(*args, **kwargs)
+
+
+def _ipython_display_html(*args, **kwargs):
+    from IPython import display
+    return display.display_html(*args, **kwargs)
 
 
 def toy_table(rows: int = 4, cols: int | Collection[str] = 2, index: int | Collection[str] = 2):
@@ -762,7 +771,7 @@ class TablePainter:
 
         if not self.disp:
             return styled
-        ipy_disp.display(styled)
+        _ipython_display(styled)
 
     def __repr__(self):
         return str(f"{self.__class__.__qualname__}{'[rev]' if self.rev else ''}{self.kws}")
@@ -817,7 +826,7 @@ def side_tables(*tables, caps=None, hide_index=None, painter=None, **kws):
               .set_caption(cap)._repr_html_()
               for tb, cap in iter_styled(tables, caps))
 
-    ipy_disp.display_html(reduce(str.__add__, tables), raw=True)
+    _ipython_display_html(reduce(str.__add__, tables), raw=True)
 
 
 def sample(dt: DTable, selection: slice | int | list[int] | float,
